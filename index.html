@@ -4,36 +4,73 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YZT</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◈</text></svg>">
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Cursor glow -->
+  <!-- Loading screen -->
+  <div class="loader" id="loader">
+    <div class="loader-inner">
+      <div class="loader-logo" data-glitch="YZT">YZT</div>
+      <div class="loader-bar">
+        <div class="loader-fill" id="loaderFill"></div>
+      </div>
+      <div class="loader-text">INITIALIZING SYSTEM...</div>
+    </div>
+  </div>
+
+  <!-- Cursor -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
   <div class="cursor-glow" id="cursorGlow"></div>
 
-  <!-- Noise overlay -->
+  <!-- Noise -->
   <div class="noise"></div>
 
-  <!-- Navigation -->
+  <!-- Scroll progress -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- Nav -->
   <nav class="nav" id="nav">
     <div class="nav-inner">
-      <a href="#" class="nav-logo" data-glitch="YZT">YZT</a>
+      <a href="#hero" class="nav-logo" data-glitch="YZT">YZT</a>
       <div class="nav-links">
-        <a href="#about" class="nav-link">About</a>
-        <a href="#work" class="nav-link">Work</a>
-        <a href="#thinking" class="nav-link">Thinking</a>
-        <a href="#contact" class="nav-link">Contact</a>
+        <a href="#about" class="nav-link" data-text="About">About</a>
+        <a href="#skills" class="nav-link" data-text="Skills">Skills</a>
+        <a href="#work" class="nav-link" data-text="Work">Work</a>
+        <a href="#thinking" class="nav-link" data-text="Thinking">Thinking</a>
+        <a href="pentest-roadmap.html" class="nav-link" data-text="Pentest">Pentest</a>
+        <a href="#contact" class="nav-link" data-text="Contact">Contact</a>
       </div>
-      <div class="nav-status">
-        <span class="status-dot"></span>
-        <span class="status-text">ONLINE</span>
+      <div class="nav-right">
+        <div class="nav-status">
+          <span class="status-dot"></span>
+          <span class="status-text">ONLINE</span>
+        </div>
+        <button class="nav-menu" id="navMenu" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </div>
   </nav>
 
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-inner">
+      <a href="#about" class="mobile-link">About</a>
+      <a href="#skills" class="mobile-link">Skills</a>
+      <a href="#work" class="mobile-link">Work</a>
+      <a href="#thinking" class="mobile-link">Thinking</a>
+      <a href="pentest-roadmap.html" class="mobile-link">Pentest</a>
+      <a href="#contact" class="mobile-link">Contact</a>
+    </div>
+  </div>
+
   <!-- Hero -->
   <section class="hero" id="hero">
+    <canvas class="hero-canvas" id="heroCanvas"></canvas>
     <div class="hero-grid"></div>
     <div class="hero-content">
       <div class="hero-label">
@@ -57,21 +94,29 @@
       <div class="hero-meta">
         <div class="meta-item">
           <span class="meta-label">LOCATION</span>
-          <span class="meta-value">██ █████</span>
+          <span class="meta-value scramble" data-text="██ █████">██ █████</span>
         </div>
         <div class="meta-item">
           <span class="meta-label">STATUS</span>
-          <span class="meta-value">ACTIVE</span>
+          <span class="meta-value"><span class="blink-dot"></span> ACTIVE</span>
         </div>
         <div class="meta-item">
           <span class="meta-label">CLEARANCE</span>
-          <span class="meta-value">██████</span>
+          <span class="meta-value scramble" data-text="████████">████████</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">UPTIME</span>
+          <span class="meta-value" id="uptime">00:00:00</span>
         </div>
       </div>
     </div>
     <div class="hero-scroll">
       <div class="scroll-line"></div>
       <span>SCROLL</span>
+    </div>
+    <div class="hero-coords">
+      <span id="coordsX">X: 0000</span>
+      <span id="coordsY">Y: 0000</span>
     </div>
   </section>
 
@@ -86,8 +131,8 @@
       <div class="about-grid">
         <div class="about-text">
           <p class="about-intro">
-            An observer at the intersection of <span class="highlight">artificial intelligence</span>,
-            <span class="highlight">cybersecurity</span>, and the emergent patterns
+            An observer at the intersection of <span class="highlight" data-tip="Large Language Models, Agents, Reinforcement Learning">artificial intelligence</span>,
+            <span class="highlight" data-tip="Penetration Testing, Reverse Engineering, OSINT">cybersecurity</span>, and the emergent patterns
             that connect them.
           </p>
           <p class="about-body">
@@ -95,6 +140,20 @@
             Every vulnerability is a door. Every model is a mirror.
             The interesting questions live at the edges.
           </p>
+          <div class="about-stats">
+            <div class="stat-card">
+              <span class="stat-number" data-target="3">0</span>
+              <span class="stat-label">Focus Areas</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number" data-target="∞">0</span>
+              <span class="stat-label">Questions</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number" data-target="0">0</span>
+              <span class="stat-label">Boundaries</span>
+            </div>
+          </div>
         </div>
         <div class="about-terminal">
           <div class="terminal-header">
@@ -102,6 +161,9 @@
               <span></span><span></span><span></span>
             </div>
             <span class="terminal-title">identity.sh</span>
+            <div class="terminal-actions">
+              <button class="term-btn" id="termRun" title="Run again">↻</button>
+            </div>
           </div>
           <div class="terminal-body" id="terminalBody">
             <div class="terminal-line">
@@ -115,37 +177,100 @@
     </div>
   </section>
 
+  <!-- Skills -->
+  <section class="section skills" id="skills">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-number">02</span>
+        <span class="section-title">Skills</span>
+        <span class="section-line"></span>
+      </div>
+      <div class="skills-visual">
+        <canvas class="skills-canvas" id="skillsCanvas"></canvas>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-card" data-level="90">
+          <div class="skill-header">
+            <span class="skill-name">AI / ML Systems</span>
+            <span class="skill-pct">90%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" style="--target-width: 90%"></div></div>
+          <div class="skill-detail">LLM Fine-tuning · Agent Architecture · RL</div>
+        </div>
+        <div class="skill-card" data-level="75">
+          <div class="skill-header">
+            <span class="skill-name">Cybersecurity</span>
+            <span class="skill-pct">75%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" style="--target-width: 75%"></div></div>
+          <div class="skill-detail">Pentesting · Web Security · OSINT</div>
+        </div>
+        <div class="skill-card" data-level="85">
+          <div class="skill-header">
+            <span class="skill-name">Development</span>
+            <span class="skill-pct">85%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" style="--target-width: 85%"></div></div>
+          <div class="skill-detail">Python · Rust · TypeScript · Go</div>
+        </div>
+        <div class="skill-card" data-level="70">
+          <div class="skill-header">
+            <span class="skill-name">Infrastructure</span>
+            <span class="skill-pct">70%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" style="--target-width: 70%"></div></div>
+          <div class="skill-detail">Docker · Linux · Networking · Cloud</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Work -->
   <section class="section work" id="work">
     <div class="section-inner">
       <div class="section-header">
-        <span class="section-number">02</span>
+        <span class="section-number">03</span>
         <span class="section-title">Work</span>
         <span class="section-line"></span>
       </div>
       <div class="work-grid">
         <div class="work-card" data-tilt>
+          <div class="card-glow"></div>
           <div class="card-icon">◈</div>
           <h3 class="card-title">AI Systems</h3>
-          <p class="card-desc">Building and breaking intelligent systems. From fine-tuning to red-teaming.</p>
+          <p class="card-desc">Building and breaking intelligent systems. From fine-tuning to red-teaming. The machines are waking up.</p>
           <div class="card-tags">
             <span>LLM</span><span>Agents</span><span>RL</span>
           </div>
-        </div>
-        <div class="work-card" data-tilt>
-          <div class="card-icon">⬡</div>
-          <h3 class="card-title">Security</h3>
-          <p class="card-desc">Mapping attack surfaces. Understanding failure modes. Finding what others miss.</p>
-          <div class="card-tags">
-            <span>Pentest</span><span>RE</span><span>OSINT</span>
+          <div class="card-footer">
+            <span class="card-status">● Active</span>
+            <span class="card-arrow">→</span>
           </div>
         </div>
         <div class="work-card" data-tilt>
+          <div class="card-glow"></div>
+          <div class="card-icon">⬡</div>
+          <h3 class="card-title">Security</h3>
+          <p class="card-desc">Mapping attack surfaces. Understanding failure modes. Every lock has a key, every system has a story.</p>
+          <div class="card-tags">
+            <span>Pentest</span><span>RE</span><span>OSINT</span>
+          </div>
+          <div class="card-footer">
+            <span class="card-status">● Exploring</span>
+            <span class="card-arrow">→</span>
+          </div>
+        </div>
+        <div class="work-card" data-tilt>
+          <div class="card-glow"></div>
           <div class="card-icon">△</div>
           <h3 class="card-title">Research</h3>
-          <p class="card-desc">Probing the boundaries of what machines can understand and create.</p>
+          <p class="card-desc">Probing the boundaries of what machines can understand and create. The unknown is the destination.</p>
           <div class="card-tags">
             <span>Papers</span><span>Experiments</span><span>Writing</span>
+          </div>
+          <div class="card-footer">
+            <span class="card-status">● Ongoing</span>
+            <span class="card-arrow">→</span>
           </div>
         </div>
       </div>
@@ -156,25 +281,71 @@
   <section class="section thinking" id="thinking">
     <div class="section-inner">
       <div class="section-header">
-        <span class="section-number">03</span>
+        <span class="section-number">04</span>
         <span class="section-title">Thinking</span>
         <span class="section-line"></span>
       </div>
       <div class="thinking-list">
-        <div class="thinking-item">
+        <div class="thinking-item" data-index="0">
           <span class="thinking-date">2026.06</span>
           <span class="thinking-title">On the fragility of alignment</span>
+          <span class="thinking-tag">AI Safety</span>
           <span class="thinking-arrow">→</span>
         </div>
-        <div class="thinking-item">
+        <div class="thinking-item" data-index="1">
           <span class="thinking-date">2026.05</span>
           <span class="thinking-title">Adversarial patterns in multi-agent systems</span>
+          <span class="thinking-tag">Research</span>
           <span class="thinking-arrow">→</span>
         </div>
-        <div class="thinking-item">
+        <div class="thinking-item" data-index="2">
           <span class="thinking-date">2026.04</span>
           <span class="thinking-title">What CTFs teach us about real systems</span>
+          <span class="thinking-tag">Security</span>
           <span class="thinking-arrow">→</span>
+        </div>
+        <div class="thinking-item" data-index="3">
+          <span class="thinking-date">2026.03</span>
+          <span class="thinking-title">The unreasonable effectiveness of prompting</span>
+          <span class="thinking-tag">LLM</span>
+          <span class="thinking-arrow">→</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Terminal -->
+  <section class="section interactive" id="interactive">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-number">05</span>
+        <span class="section-title">Terminal</span>
+        <span class="section-line"></span>
+      </div>
+      <div class="interactive-terminal">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <span class="terminal-title">visitor@yzt — bash</span>
+        </div>
+        <div class="interactive-body" id="interactiveBody">
+          <div class="interactive-welcome">
+            <pre class="ascii-art">
+ ██╗   ██╗███████╗████████╗
+ ╚██╗ ██╔╝╚══██╔══╝╚══██╔══╝
+  ╚████╔╝    ██║      ██║
+   ╚██╔╝     ██║      ██║
+    ██║      ██║      ██║
+    ╚═╝      ╚═╝      ╚═╝
+            </pre>
+            <p class="interactive-hint">Type <span class="cmd-hint">help</span> to see available commands</p>
+          </div>
+          <div class="interactive-input-line">
+            <span class="prompt visitor">visitor@yzt</span><span class="prompt-sep">:</span><span class="prompt-path">~</span><span class="prompt-end">$</span>
+            <input type="text" class="interactive-input" id="interactiveInput" autocomplete="off" spellcheck="false">
+            <span class="input-cursor">█</span>
+          </div>
         </div>
       </div>
     </div>
@@ -184,7 +355,7 @@
   <section class="section contact" id="contact">
     <div class="section-inner">
       <div class="section-header">
-        <span class="section-number">04</span>
+        <span class="section-number">06</span>
         <span class="section-title">Contact</span>
         <span class="section-line"></span>
       </div>
@@ -194,24 +365,36 @@
         </p>
         <div class="contact-links">
           <a href="https://github.com" class="contact-link" target="_blank" rel="noopener">
-            <span class="link-label">GITHUB</span>
-            <span class="link-value">github.com/yzt</span>
+            <span class="link-icon">⬡</span>
+            <span class="link-info">
+              <span class="link-label">GITHUB</span>
+              <span class="link-value">github.com/yzt</span>
+            </span>
+            <span class="link-arrow">→</span>
           </a>
           <a href="mailto:hi@yzt.qzz.io" class="contact-link">
-            <span class="link-label">EMAIL</span>
-            <span class="link-value">hi@yzt.qzz.io</span>
+            <span class="link-icon">◈</span>
+            <span class="link-info">
+              <span class="link-label">EMAIL</span>
+              <span class="link-value">hi@yzt.qzz.io</span>
+            </span>
+            <span class="link-arrow">→</span>
+          </a>
+          <a href="https://yzt.qzz.io" class="contact-link" target="_blank" rel="noopener">
+            <span class="link-icon">△</span>
+            <span class="link-info">
+              <span class="link-label">WEBSITE</span>
+              <span class="link-value">yzt.qzz.io</span>
+            </span>
+            <span class="link-arrow">→</span>
           </a>
         </div>
-        <div class="contact-ascii">
-          <pre>
-  ╔══════════════════════════════════════╗
-  ║  "The only way to discover the      ║
-  ║   limits of the possible is to      ║
-  ║   go beyond them into the           ║
-  ║   impossible."                      ║
-  ║                    — Arthur C. Clarke║
-  ╚══════════════════════════════════════╝
-          </pre>
+        <div class="contact-quote">
+          <blockquote>
+            "The only way to discover the limits of the possible<br>
+            is to go beyond them into the impossible."
+          </blockquote>
+          <cite>— Arthur C. Clarke</cite>
         </div>
       </div>
     </div>
