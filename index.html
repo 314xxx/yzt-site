@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YZT</title>
+  <meta name="description" content="YZT — Researcher. Operator. Observer of systems that think and systems that break.">
+  <meta name="theme-color" content="#fafafa">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◈</text></svg>">
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,6 +27,7 @@
   <div class="cursor-dot" id="cursorDot"></div>
   <div class="cursor-ring" id="cursorRing"></div>
   <div class="cursor-glow" id="cursorGlow"></div>
+  <canvas class="cursor-trail" id="cursorTrail"></canvas>
 
   <!-- Noise -->
   <div class="noise"></div>
@@ -45,6 +48,14 @@
         <a href="#contact" class="nav-link" data-text="Contact">Contact</a>
       </div>
       <div class="nav-right">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg class="theme-icon sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="theme-icon moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
         <div class="nav-status">
           <span class="status-dot"></span>
           <span class="status-text">ONLINE</span>
@@ -91,6 +102,10 @@
         </span>
       </h1>
       <p class="hero-desc" id="heroDesc"></p>
+      <div class="hero-cta">
+        <a href="#work" class="btn btn-primary">Explore Work</a>
+        <a href="#contact" class="btn btn-outline">Get in Touch</a>
+      </div>
       <div class="hero-meta">
         <div class="meta-item">
           <span class="meta-label">LOCATION</span>
@@ -399,6 +414,22 @@
       </div>
     </div>
   </section>
+
+  <!-- Easter egg notification -->
+  <div class="ee-toast" id="eeToast">
+    <span class="ee-toast-icon">🎮</span>
+    <span class="ee-toast-text" id="eeToastText"></span>
+  </div>
+
+  <!-- Konami overlay -->
+  <div class="konami-overlay" id="konamiOverlay">
+    <canvas id="matrixCanvas"></canvas>
+    <div class="konami-text">
+      <h2>🎮 KONAMI CODE ACTIVATED</h2>
+      <p>You found the secret. The matrix has you.</p>
+      <button class="btn btn-primary" onclick="document.getElementById('konamiOverlay').classList.remove('active')">EXIT</button>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="footer">

@@ -1,9 +1,23 @@
 /* ============================================
-   YZT — Interactive Engine v2
-   Cursor · Particles · Terminal · Reveals
+   YZT — Interactive Engine v3
+   Theme · Cursor Trail · Particles · Konami
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  // ===== THEME TOGGLE =====
+  const themeToggle = document.getElementById('themeToggle');
+  const html = document.documentElement;
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  html.setAttribute('data-theme', savedTheme);
+
+  themeToggle.addEventListener('click', () => {
+    const current = html.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    showToast(next === 'dark' ? '🌙 Dark mode activated' : '☀️ Light mode activated');
+  });
 
   // ===== LOADER =====
   const loader = document.getElementById('loader');
@@ -30,25 +44,70 @@ document.addEventListener('DOMContentLoaded', () => {
   const dot = document.getElementById('cursorDot');
   const ring = document.getElementById('cursorRing');
   const glow = document.getElementById('cursorGlow');
+  const trailCanvas = document.getElementById('cursorTrail');
+  const tCtx = trailCanvas.getContext('2d');
   let mx = -100, my = -100, rx = -100, ry = -100, gx = -100, gy = -100;
 
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-  });
+  function resizeTrail() {
+    trailCanvas.width = window.innerWidth;
+    trailCanvas.height = window.innerHeight;
+  }
+  resizeTrail();
+  window.addEventListener('resize', resizeTrail);
 
-  function animateCursor() {
-    rx += (mx - rx) * 0.15;
-    ry += (my - ry) * 0.15;
-    gx += (mx - gx) * 0.06;
-    gy += (my - gy) * 0.06;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+  // Trail particles
+  const trailParticles = [];
+  class TrailParticle {
+    constructor(x, y) {
+      this.x = x; this.y = y;
+      this.vx = (Math.random() - 0.5) * 2;
+      this.vy = (Math.random() - 0.5) * 2;
+      this.life = 1;
+      this.decay = Math.random() * 0.03 + 0.02;
+      this.size = Math.random() * 3 + 1;
+    }
+    update() {
+      this.x += this.vx; this.y += this.vy;
+      this.life -= this.decay;
+    }
+    draw(ctx) {
+      const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+      ctx.globalAlpha = this.life * 0.6;
+      ctx.fillStyle = accent;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  let lastTrailTime = 0;
+  function animateCursor(time) {
+    rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15;
+    gx += (mx - gx) * 0.06; gy += (my - gy) * 0.06;
     dot.style.left = mx + 'px'; dot.style.top = my + 'px';
     ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
     glow.style.left = gx + 'px'; glow.style.top = gy + 'px';
+
+    // Trail
+    if (time - lastTrailTime > 16 && mx > 0) {
+      trailParticles.push(new TrailParticle(mx, my));
+      lastTrailTime = time;
+    }
+    tCtx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
+    for (let i = trailParticles.length - 1; i >= 0; i--) {
+      trailParticles[i].update();
+      trailParticles[i].draw(tCtx);
+      if (trailParticles[i].life <= 0) trailParticles.splice(i, 1);
+    }
+    tCtx.globalAlpha = 1;
+
     requestAnimationFrame(animateCursor);
   }
-  animateCursor();
+  requestAnimationFrame(animateCursor);
 
-  // Cursor hover on interactive elements
+  // Cursor hover
   const interactiveEls = 'a, button, .work-card, .thinking-item, .skill-card, .stat-card, input';
   document.querySelectorAll(interactiveEls).forEach(el => {
     el.addEventListener('mouseenter', () => { dot.classList.add('hover'); ring.classList.add('hover'); });
@@ -62,8 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let mouseCanvas = { x: 0, y: 0 };
 
   function resizeCanvas() {
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+    canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
   }
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
@@ -88,24 +146,18 @@ document.addEventListener('DOMContentLoaded', () => {
       this.x += this.vx; this.y += this.vy;
       if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
       if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-      // Mouse repel
-      const dx = this.x - mouseCanvas.x;
-      const dy = this.y - mouseCanvas.y;
+      const dx = this.x - mouseCanvas.x, dy = this.y - mouseCanvas.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
       if (dist < 150) {
         const force = (150 - dist) / 150 * 0.02;
-        this.vx += dx * force;
-        this.vy += dy * force;
+        this.vx += dx * force; this.vy += dy * force;
       }
-      // Damping
-      this.vx *= 0.99;
-      this.vy *= 0.99;
+      this.vx *= 0.99; this.vy *= 0.99;
     }
     draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(0, 212, 255, ${this.opacity})`;
-      ctx.fill();
+      const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+      ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = accent; ctx.globalAlpha = this.opacity; ctx.fill(); ctx.globalAlpha = 1;
     }
   }
 
@@ -113,35 +165,29 @@ document.addEventListener('DOMContentLoaded', () => {
   for (let i = 0; i < numParticles; i++) particles.push(new Particle());
 
   function drawLines() {
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
+        const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < 120) {
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(0, 212, 255, ${0.06 * (1 - dist / 120)})`;
-          ctx.lineWidth = 0.5;
-          ctx.stroke();
+          ctx.strokeStyle = accent; ctx.globalAlpha = 0.06 * (1 - dist / 120);
+          ctx.lineWidth = 0.5; ctx.stroke();
         }
       }
     }
-    // Lines to mouse
     particles.forEach(p => {
-      const dx = p.x - mouseCanvas.x;
-      const dy = p.y - mouseCanvas.y;
+      const dx = p.x - mouseCanvas.x, dy = p.y - mouseCanvas.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
       if (dist < 200) {
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(mouseCanvas.x, mouseCanvas.y);
-        ctx.strokeStyle = `rgba(0, 212, 255, ${0.08 * (1 - dist / 200)})`;
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouseCanvas.x, mouseCanvas.y);
+        ctx.strokeStyle = accent; ctx.globalAlpha = 0.08 * (1 - dist / 200);
+        ctx.lineWidth = 0.5; ctx.stroke();
       }
     });
+    ctx.globalAlpha = 1;
   }
 
   function animateParticles() {
@@ -152,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   animateParticles();
 
-  // ===== COORDS DISPLAY =====
+  // ===== COORDS =====
   const coordsX = document.getElementById('coordsX');
   const coordsY = document.getElementById('coordsY');
   document.addEventListener('mousemove', e => {
@@ -160,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
     coordsY.textContent = 'Y: ' + String(e.clientY).padStart(4, '0');
   });
 
-  // ===== UPTIME COUNTER =====
+  // ===== UPTIME =====
   const uptimeEl = document.getElementById('uptime');
   const startTime = Date.now();
   function updateUptime() {
@@ -176,29 +222,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== NAV =====
   const nav = document.getElementById('nav');
   const scrollProgress = document.getElementById('scrollProgress');
-
   window.addEventListener('scroll', () => {
-    const scrolled = window.scrollY > 50;
-    nav.classList.toggle('scrolled', scrolled);
-    // Scroll progress
+    nav.classList.toggle('scrolled', window.scrollY > 50);
     const total = document.documentElement.scrollHeight - window.innerHeight;
-    const pct = total > 0 ? (window.scrollY / total) * 100 : 0;
-    scrollProgress.style.width = pct + '%';
+    scrollProgress.style.width = total > 0 ? (window.scrollY / total * 100) + '%' : '0%';
   });
 
-  // Smooth scroll for nav links
   document.querySelectorAll('a[href^="#"]').forEach(link => {
     link.addEventListener('click', e => {
       e.preventDefault();
       const target = document.querySelector(link.getAttribute('href'));
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      // Close mobile menu
       mobileMenu.classList.remove('active');
       navMenuBtn.classList.remove('active');
     });
   });
 
-  // Mobile menu
   const navMenuBtn = document.getElementById('navMenu');
   const mobileMenu = document.getElementById('mobileMenu');
   navMenuBtn.addEventListener('click', () => {
@@ -206,30 +245,21 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileMenu.classList.toggle('active');
   });
 
-  // ===== HERO TYPEWRITERS =====
+  // ===== TYPEWRITERS =====
   function typeText(el, text, speed, delay, callback) {
     setTimeout(() => {
       let i = 0;
       function tick() {
         if (i <= text.length) {
           el.textContent = text.slice(0, i) + (i < text.length ? '█' : '');
-          i++;
-          setTimeout(tick, speed + Math.random() * speed * 0.5);
-        } else {
-          el.textContent = text;
-          if (callback) callback();
-        }
+          i++; setTimeout(tick, speed + Math.random() * speed * 0.5);
+        } else { el.textContent = text; if (callback) callback(); }
       }
       tick();
     }, delay);
   }
-
-  typeText(document.getElementById('heroLabel'),
-    'SYSTEM OPERATOR // CLASSIFIED', 50, 1200);
-
-  typeText(document.getElementById('heroDesc'),
-    'Researcher. Operator. Observer of systems that think and systems that break.',
-    25, 2200);
+  typeText(document.getElementById('heroLabel'), 'SYSTEM OPERATOR // CLASSIFIED', 50, 1200);
+  typeText(document.getElementById('heroDesc'), 'Researcher. Operator. Observer of systems that think and systems that break.', 25, 2200);
 
   // ===== SCRAMBLE TEXT =====
   const scrambleChars = '█▓▒░@#$%&*!?';
@@ -239,21 +269,14 @@ document.addEventListener('DOMContentLoaded', () => {
     el.addEventListener('mouseenter', () => {
       let iterations = 0;
       interval = setInterval(() => {
-        el.textContent = original.split('').map((ch, i) => {
-          if (i < iterations) return original[i];
-          return scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
-        }).join('');
+        el.textContent = original.split('').map((ch, i) =>
+          i < iterations ? original[i] : scrambleChars[Math.floor(Math.random() * scrambleChars.length)]
+        ).join('');
         iterations += 1 / 2;
-        if (iterations > original.length) {
-          el.textContent = original;
-          clearInterval(interval);
-        }
+        if (iterations > original.length) { el.textContent = original; clearInterval(interval); }
       }, 40);
     });
-    el.addEventListener('mouseleave', () => {
-      clearInterval(interval);
-      el.textContent = original;
-    });
+    el.addEventListener('mouseleave', () => { clearInterval(interval); el.textContent = original; });
   });
 
   // ===== ABOUT TERMINAL =====
@@ -264,39 +287,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const termSequence = [
     { type: 'cmd', text: 'cat /etc/identity' },
-    { type: 'output', lines: [
-      'name:    [REDACTED]',
-      'alias:   yzt',
-      'role:    researcher / operator',
-      'status:  active',
-    ]},
+    { type: 'output', lines: ['name:    [REDACTED]', 'alias:   yzt', 'role:    researcher / operator', 'status:  active'] },
     { type: 'cmd', text: 'echo $CURRENT_FOCUS' },
-    { type: 'output', lines: [
-      'AI systems · Cybersecurity · Emergent behavior',
-    ]},
+    { type: 'output', lines: ['AI systems · Cybersecurity · Emergent behavior'] },
     { type: 'cmd', text: 'uname -a' },
-    { type: 'output', lines: [
-      'void 6.6.0-yzt #1 SMP PREEMPT_DYNAMIC x86_64',
-    ]},
+    { type: 'output', lines: ['void 6.6.0-yzt #1 SMP PREEMPT_DYNAMIC x86_64'] },
     { type: 'cmd', text: 'cat motto.txt' },
-    { type: 'output', lines: [
-      '"Every system has a story.',
-      '  Find it."',
-    ]},
+    { type: 'output', lines: ['"Every system has a story.', '  Find it."'] },
   ];
 
   let seqIdx = 0;
-
   function buildTerminalState(upToIdx) {
     termBody.innerHTML = '';
     for (let i = 0; i <= upToIdx; i++) {
       const step = termSequence[i];
       if (step.type === 'output') {
         step.lines.forEach(line => {
-          const div = document.createElement('div');
-          div.className = 'terminal-output';
-          div.textContent = line;
-          termBody.appendChild(div);
+          const div = document.createElement('div'); div.className = 'terminal-output';
+          div.textContent = line; termBody.appendChild(div);
         });
       }
     }
@@ -307,49 +315,23 @@ document.addEventListener('DOMContentLoaded', () => {
     termCmd = promptLine.querySelector('.cmd');
     cursorEl = promptLine.querySelector('.cursor');
   }
-
   function typeCmd(text, cb) {
     let i = 0;
     function tick() {
-      if (i <= text.length) {
-        termCmd.textContent = text.slice(0, i);
-        i++;
-        setTimeout(tick, 45 + Math.random() * 25);
-      } else { setTimeout(cb, 350); }
+      if (i <= text.length) { termCmd.textContent = text.slice(0, i); i++; setTimeout(tick, 45 + Math.random() * 25); }
+      else { setTimeout(cb, 350); }
     }
     tick();
   }
-
   function runSequence() {
-    if (seqIdx >= termSequence.length) {
-      if (cursorEl) cursorEl.style.display = 'none';
-      return;
-    }
+    if (seqIdx >= termSequence.length) { if (cursorEl) cursorEl.style.display = 'none'; return; }
     const step = termSequence[seqIdx];
-    if (step.type === 'cmd') {
-      typeCmd(step.text, () => { seqIdx++; runSequence(); });
-    } else if (step.type === 'output') {
-      buildTerminalState(seqIdx);
-      termCmd.textContent = '';
-      seqIdx++;
-      setTimeout(runSequence, 500);
-    }
+    if (step.type === 'cmd') { typeCmd(step.text, () => { seqIdx++; runSequence(); }); }
+    else if (step.type === 'output') { buildTerminalState(seqIdx); termCmd.textContent = ''; seqIdx++; setTimeout(runSequence, 500); }
   }
-
-  // Re-run button
-  termRunBtn.addEventListener('click', () => {
-    seqIdx = 0;
-    buildTerminalState(-1);
-    setTimeout(runSequence, 200);
-  });
-
-  // Start on scroll
+  termRunBtn.addEventListener('click', () => { seqIdx = 0; buildTerminalState(-1); setTimeout(runSequence, 200); });
   const termObserver = new IntersectionObserver(entries => {
-    if (entries[0].isIntersecting) {
-      buildTerminalState(-1);
-      setTimeout(runSequence, 500);
-      termObserver.disconnect();
-    }
+    if (entries[0].isIntersecting) { buildTerminalState(-1); setTimeout(runSequence, 500); termObserver.disconnect(); }
   }, { threshold: 0.3 });
   termObserver.observe(termBody);
 
@@ -358,17 +340,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const target = el.getAttribute('data-target');
     const observer = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting) {
-        if (target === '∞') {
-          el.textContent = '∞';
-        } else {
-          const num = parseInt(target);
-          let current = 0;
+        if (target === '∞') { el.textContent = '∞'; }
+        else {
+          const num = parseInt(target); let current = 0;
           const step = Math.max(1, Math.floor(num / 30));
-          const interval = setInterval(() => {
-            current += step;
-            if (current >= num) { current = num; clearInterval(interval); }
-            el.textContent = current;
-          }, 40);
+          const interval = setInterval(() => { current += step; if (current >= num) { current = num; clearInterval(interval); } el.textContent = current; }, 40);
         }
         observer.disconnect();
       }
@@ -379,19 +355,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== SKILLS ANIMATION =====
   document.querySelectorAll('.skill-card').forEach(el => {
     const observer = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting) {
-        el.classList.add('visible');
-        observer.disconnect();
-      }
+      if (entries[0].isIntersecting) { el.classList.add('visible'); observer.disconnect(); }
     }, { threshold: 0.3 });
     observer.observe(el);
   });
 
-  // ===== SKILLS CANVAS (Wave visualization) =====
+  // ===== SKILLS CANVAS =====
   const skillsCanvas = document.getElementById('skillsCanvas');
   const sCtx = skillsCanvas.getContext('2d');
   let skillsTime = 0;
-
   function resizeSkillsCanvas() {
     skillsCanvas.width = skillsCanvas.offsetWidth * 2;
     skillsCanvas.height = skillsCanvas.offsetHeight * 2;
@@ -401,58 +373,38 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', resizeSkillsCanvas);
 
   function drawSkillsWave() {
-    const w = skillsCanvas.offsetWidth;
-    const h = skillsCanvas.offsetHeight;
+    const w = skillsCanvas.offsetWidth, h = skillsCanvas.offsetHeight;
     sCtx.clearRect(0, 0, w, h);
-
     const waves = [
-      { amp: 20, freq: 0.015, speed: 0.02, color: 'rgba(0, 212, 255, 0.15)' },
-      { amp: 15, freq: 0.02, speed: 0.015, color: 'rgba(123, 97, 255, 0.12)' },
-      { amp: 25, freq: 0.01, speed: 0.025, color: 'rgba(0, 212, 255, 0.08)' },
+      { amp: 20, freq: 0.015, speed: 0.02, color: 'rgba(0,212,255,0.15)' },
+      { amp: 15, freq: 0.02, speed: 0.015, color: 'rgba(123,97,255,0.12)' },
+      { amp: 25, freq: 0.01, speed: 0.025, color: 'rgba(0,212,255,0.08)' },
     ];
-
     waves.forEach(wave => {
-      sCtx.beginPath();
-      sCtx.moveTo(0, h / 2);
+      sCtx.beginPath(); sCtx.moveTo(0, h / 2);
       for (let x = 0; x <= w; x++) {
         const y = h / 2 + Math.sin(x * wave.freq + skillsTime * wave.speed) * wave.amp
-                        + Math.sin(x * wave.freq * 0.5 + skillsTime * wave.speed * 1.3) * wave.amp * 0.5;
+                + Math.sin(x * wave.freq * 0.5 + skillsTime * wave.speed * 1.3) * wave.amp * 0.5;
         sCtx.lineTo(x, y);
       }
-      sCtx.lineTo(w, h);
-      sCtx.lineTo(0, h);
-      sCtx.closePath();
-      sCtx.fillStyle = wave.color;
-      sCtx.fill();
+      sCtx.lineTo(w, h); sCtx.lineTo(0, h); sCtx.closePath();
+      sCtx.fillStyle = wave.color; sCtx.fill();
     });
-
-    // Grid
-    sCtx.strokeStyle = 'rgba(0,0,0,0.03)';
-    sCtx.lineWidth = 0.5;
-    for (let x = 0; x < w; x += 40) {
-      sCtx.beginPath(); sCtx.moveTo(x, 0); sCtx.lineTo(x, h); sCtx.stroke();
-    }
-    for (let y = 0; y < h; y += 40) {
-      sCtx.beginPath(); sCtx.moveTo(0, y); sCtx.lineTo(w, y); sCtx.stroke();
-    }
-
-    skillsTime++;
-    requestAnimationFrame(drawSkillsWave);
+    sCtx.strokeStyle = 'rgba(0,0,0,0.03)'; sCtx.lineWidth = 0.5;
+    for (let x = 0; x < w; x += 40) { sCtx.beginPath(); sCtx.moveTo(x, 0); sCtx.lineTo(x, h); sCtx.stroke(); }
+    for (let y = 0; y < h; y += 40) { sCtx.beginPath(); sCtx.moveTo(0, y); sCtx.lineTo(w, y); sCtx.stroke(); }
+    skillsTime++; requestAnimationFrame(drawSkillsWave);
   }
   drawSkillsWave();
 
-  // ===== CARD GLOW FOLLOW =====
+  // ===== CARD GLOW + TILT =====
   document.querySelectorAll('.work-card').forEach(card => {
     card.addEventListener('mousemove', e => {
       const rect = card.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      card.style.setProperty('--mouse-x', x + '%');
-      card.style.setProperty('--mouse-y', y + '%');
+      card.style.setProperty('--mouse-x', ((e.clientX - rect.left) / rect.width * 100) + '%');
+      card.style.setProperty('--mouse-y', ((e.clientY - rect.top) / rect.height * 100) + '%');
     });
   });
-
-  // ===== CARD TILT =====
   document.querySelectorAll('[data-tilt]').forEach(card => {
     card.addEventListener('mousemove', e => {
       const rect = card.getBoundingClientRect();
@@ -468,19 +420,10 @@ document.addEventListener('DOMContentLoaded', () => {
     '.about-text, .about-terminal, .about-stats, .skill-card, .work-card, .thinking-item, .contact-content, .interactive-terminal'
   );
   revealEls.forEach(el => el.classList.add('reveal'));
-
   const revealObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
   }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-
-  revealEls.forEach((el, i) => {
-    el.style.transitionDelay = (i % 4) * 0.08 + 's';
-    revealObserver.observe(el);
-  });
+  revealEls.forEach((el, i) => { el.style.transitionDelay = (i % 4) * 0.08 + 's'; revealObserver.observe(el); });
 
   // ===== INTERACTIVE TERMINAL =====
   const iBody = document.getElementById('interactiveBody');
@@ -488,63 +431,99 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const commands = {
     help: () => [
-      'Available commands:',
-      '',
+      'Available commands:', '',
       '  help      — Show this message',
       '  whoami    — Identity info',
       '  about     — About me',
       '  skills    — Skill tree',
       '  focus     — Current focus areas',
+      '  projects  — Notable projects',
       '  secret    — ???',
+      '  theme     — Toggle dark/light mode',
       '  clear     — Clear terminal',
       '  date      — Current timestamp',
       '  quote     — Random quote',
       '  matrix    — Enter the matrix',
-      '',
-      'Type anything to explore.',
+      '  hack      — Simulate hacking',
+      '  neofetch  — System info',
+      '  fortune   — Fortune cookie',
+      '', 'Type anything to explore.',
     ],
-    whoami: () => ['yzt — researcher / operator', 'clearance: ████████████'],
-    about: () => [
-      'An observer at the intersection of AI, security,',
-      'and emergent patterns. Operating in the spaces',
-      'where systems break, evolve, and recombine.',
-    ],
+    whoami: () => ['yzt — researcher / operator', 'clearance: ████████████', 'location: [REDACTED]'],
+    about: () => ['An observer at the intersection of AI, security,', 'and emergent patterns. Operating in the spaces', 'where systems break, evolve, and recombine.'],
     skills: () => [
       '├── AI / ML Systems    [████████░░] 90%',
       '├── Cybersecurity      [███████░░░] 75%',
       '├── Development        [████████░░] 85%',
       '└── Infrastructure     [███████░░░] 70%',
     ],
-    focus: () => [
-      '→ LLM Agents & Orchestration',
-      '→ Penetration Testing (learning)',
-      '→ Adversarial ML Research',
-      '→ System-level security analysis',
+    focus: () => ['→ LLM Agents & Orchestration', '→ Penetration Testing (learning)', '→ Adversarial ML Research', '→ System-level security analysis'],
+    projects: () => [
+      '◆ Hermes Agent — AI assistant platform',
+      '◆ Personal Site — yzt.qzz.io',
+      '◆ [CLASSIFIED] — ████████████████',
+      '◆ [CLASSIFIED] — ████████████████',
     ],
-    secret: () => ['You found it. But there\'s nothing here. Or is there? 👁️'],
+    secret: () => { setTimeout(() => showToast('🎮 Easter egg found! Try the Konami code...'), 500); return ['You found it. But there\'s nothing here. Or is there? 👁️', 'Hint: ↑↑↓↓←→←→BA']; },
+    theme: () => { themeToggle.click(); return ['Theme toggled!']; },
     date: () => [new Date().toISOString()],
     clear: () => 'CLEAR',
     matrix: () => {
       const lines = [];
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 10; i++) {
         let line = '';
-        for (let j = 0; j < 60; j++) {
-          line += String.fromCharCode(0x30A0 + Math.random() * 96);
-        }
+        for (let j = 0; j < 60; j++) line += String.fromCharCode(0x30A0 + Math.random() * 96);
         lines.push(line);
       }
-      lines.push('', 'Wake up, Neo...');
+      lines.push('', 'Wake up, Neo...', 'The Matrix has you...', 'Follow the white rabbit. 🐇');
       return lines;
     },
-    quote: () => {
-      const quotes = [
-        '"The best way to predict the future is to invent it." — Alan Kay',
-        '"Any sufficiently advanced technology is indistinguishable from magic." — Arthur C. Clarke',
-        '"In the middle of difficulty lies opportunity." — Einstein',
-        '"The only true wisdom is in knowing you know nothing." — Socrates',
-        '"First, solve the problem. Then, write the code." — John Johnson',
+    hack: () => {
+      return [
+        'Initializing exploit framework...',
+        '[*] Scanning target 192.168.1.0/24',
+        '[+] Found 12 live hosts',
+        '[*] Enumerating services...',
+        '[+] Port 22/tcp — OpenSSH 8.9',
+        '[+] Port 80/tcp — Apache 2.4',
+        '[+] Port 443/tcp — nginx 1.24',
+        '[*] Checking for vulnerabilities...',
+        '[!] CVE-2024-XXXXX detected',
+        '[*] Generating payload...',
+        '[+] Payload delivered successfully',
+        '[+] Session 1 opened',
+        '',
+        'Just kidding. 😉 Stay ethical.',
       ];
-      return [quotes[Math.floor(Math.random() * quotes.length)]];
+    },
+    neofetch: () => {
+      const now = new Date();
+      return [
+        '        .--.          yzt@void',
+        '       |o_o |         ──────────────',
+        '       |:_/ |         OS: Void Linux x86_64',
+        '      //   \\ \\        Kernel: 6.6.0-yzt',
+        '     (|     | )       Uptime: ' + Math.floor((Date.now() - startTime) / 60000) + ' mins',
+        '    /\'\\_   _/`\\       Shell: bash 5.2',
+        '    \\___)=(___/       Theme: ' + html.getAttribute('data-theme'),
+        '                      Resolution: ' + window.innerWidth + 'x' + window.innerHeight,
+        '                      Terminal: yzt-term',
+        '                      CPU: Neural Network',
+        '                      Memory: ∞ / ∞',
+      ];
+    },
+    fortune: () => {
+      const fortunes = [
+        '🔮 "The best way to predict the future is to invent it." — Alan Kay',
+        '🔮 "Any sufficiently advanced technology is indistinguishable from magic." — Arthur C. Clarke',
+        '🔮 "In the middle of difficulty lies opportunity." — Einstein',
+        '🔮 "First, solve the problem. Then, write the code." — John Johnson',
+        '🔮 "Talk is cheap. Show me the code." — Linus Torvalds',
+        '🔮 "The only true wisdom is in knowing you know nothing." — Socrates',
+        '🔮 "Simplicity is the ultimate sophistication." — Leonardo da Vinci',
+        '🔮 "Make it work, make it right, make it fast." — Kent Beck',
+      ];
+      return [fortunes[Math.floor(Math.random() * fortunes.length)]];
     },
   };
 
@@ -567,13 +546,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const cmd = iInput.value.trim().toLowerCase();
       iInput.value = '';
       if (!cmd) return;
-
       addPromptEcho(cmd);
 
       if (commands[cmd]) {
         const result = commands[cmd]();
         if (result === 'CLEAR') {
-          // Clear all output except welcome and input line
           const welcome = iBody.querySelector('.interactive-welcome');
           const inputLine = iBody.querySelector('.interactive-input-line');
           iBody.innerHTML = '';
@@ -581,31 +558,112 @@ document.addEventListener('DOMContentLoaded', () => {
           iBody.appendChild(inputLine);
           return;
         }
-        result.forEach((line, i) => {
-          setTimeout(() => addOutput(line), i * 30);
-        });
+        result.forEach((line, i) => { setTimeout(() => addOutput(line), i * 30); });
       } else {
         addOutput(`bash: ${cmd}: command not found. Type 'help' for available commands.`, 'error');
       }
+      setTimeout(() => { iBody.scrollTop = iBody.scrollHeight; }, 100);
+    }
+  });
+  iBody.addEventListener('click', () => iInput.focus());
 
-      // Auto-scroll
-      setTimeout(() => {
-        iBody.scrollTop = iBody.scrollHeight;
-      }, 100);
+  // ===== TOAST NOTIFICATION =====
+  function showToast(text) {
+    const toast = document.getElementById('eeToast');
+    document.getElementById('eeToastText').textContent = text;
+    toast.classList.add('active');
+    setTimeout(() => toast.classList.remove('active'), 3000);
+  }
+
+  // ===== KONAMI CODE =====
+  const konamiSequence = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  let konamiIdx = 0;
+
+  document.addEventListener('keydown', e => {
+    if (e.key === konamiSequence[konamiIdx] || e.key.toLowerCase() === konamiSequence[konamiIdx]) {
+      konamiIdx++;
+      if (konamiIdx === konamiSequence.length) {
+        konamiIdx = 0;
+        activateKonami();
+      }
+    } else {
+      konamiIdx = 0;
     }
   });
 
-  // Focus input on click anywhere in terminal
-  iBody.addEventListener('click', () => iInput.focus());
+  // Touch konami for mobile (tap logo 5 times)
+  let logoTaps = 0;
+  let logoTimer;
+  document.querySelector('.nav-logo').addEventListener('click', e => {
+    e.preventDefault();
+    logoTaps++;
+    clearTimeout(logoTimer);
+    logoTimer = setTimeout(() => { logoTaps = 0; }, 2000);
+    if (logoTaps >= 5) { logoTaps = 0; activateKonami(); }
+  });
 
-  // ===== BUILD TIME =====
-  document.getElementById('buildTime').textContent =
-    'BUILT ' + new Date().toISOString().slice(0, 10).toUpperCase();
+  function activateKonami() {
+    showToast('🎮 KONAMI CODE ACTIVATED!');
+    const overlay = document.getElementById('konamiOverlay');
+    overlay.classList.add('active');
+
+    // Matrix rain
+    const mCanvas = document.getElementById('matrixCanvas');
+    const mCtx = mCanvas.getContext('2d');
+    mCanvas.width = window.innerWidth;
+    mCanvas.height = window.innerHeight;
+
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+{}|:<>?';
+    const fontSize = 14;
+    const columns = Math.floor(mCanvas.width / fontSize);
+    const drops = new Array(columns).fill(1);
+
+    function drawMatrix() {
+      mCtx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+      mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
+      mCtx.fillStyle = '#00ff88';
+      mCtx.font = fontSize + 'px JetBrains Mono, monospace';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        mCtx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > mCanvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+      if (overlay.classList.contains('active')) requestAnimationFrame(drawMatrix);
+    }
+    drawMatrix();
+  }
+
+  // ===== CLICK BURST =====
+  document.addEventListener('click', e => {
+    for (let i = 0; i < 6; i++) {
+      const spark = document.createElement('div');
+      spark.style.cssText = `
+        position: fixed; left: ${e.clientX}px; top: ${e.clientY}px;
+        width: 4px; height: 4px; border-radius: 50%;
+        background: var(--accent); pointer-events: none; z-index: 100000;
+        transition: all 0.6s cubic-bezier(0.16,1,0.3,1);
+      `;
+      document.body.appendChild(spark);
+      const angle = (Math.PI * 2 / 6) * i;
+      const distance = 30 + Math.random() * 20;
+      requestAnimationFrame(() => {
+        spark.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0)`;
+        spark.style.opacity = '0';
+      });
+      setTimeout(() => spark.remove(), 600);
+    }
+  });
 
   // ===== PARALLAX GRID =====
   window.addEventListener('scroll', () => {
     const grid = document.querySelector('.hero-grid');
     if (grid) grid.style.transform = `translateY(${window.scrollY * 0.3}px)`;
   });
+
+  // ===== BUILD TIME =====
+  document.getElementById('buildTime').textContent =
+    'BUILT ' + new Date().toISOString().slice(0, 10).toUpperCase();
 
 });
