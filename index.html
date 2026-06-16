@@ -38,14 +38,14 @@
   <!-- Nav -->
   <nav class="nav" id="nav">
     <div class="nav-inner">
-      <a href="#hero" class="nav-logo" data-glitch="YZT">YZT</a>
+      <a href="#/" class="nav-logo" data-glitch="YZT">YZT</a>
       <div class="nav-links">
-        <a href="#about" class="nav-link" data-text="About" data-i18n="nav-about">关于</a>
-        <a href="#skills" class="nav-link" data-text="Skills" data-i18n="nav-skills">技能</a>
-        <a href="#work" class="nav-link" data-text="Work" data-i18n="nav-work">作品</a>
-        <a href="#thinking" class="nav-link" data-text="Thinking" data-i18n="nav-thinking">思考</a>
+        <a href="#/about" class="nav-link" data-text="About" data-i18n="nav-about">关于</a>
+        <a href="#/skills" class="nav-link" data-text="Skills" data-i18n="nav-skills">技能</a>
+        <a href="#/work" class="nav-link" data-text="Work" data-i18n="nav-work">作品</a>
+        <a href="#/thinking" class="nav-link" data-text="Thinking" data-i18n="nav-thinking">思考</a>
         <a href="pentest-roadmap.html" class="nav-link" data-text="Pentest" data-i18n="nav-pentest">渗透</a>
-        <a href="#contact" class="nav-link" data-text="Contact" data-i18n="nav-contact">联系</a>
+        <a href="#/contact" class="nav-link" data-text="Contact" data-i18n="nav-contact">联系</a>
       </div>
       <div class="nav-right">
         <button class="lang-toggle" id="langToggle" aria-label="Toggle language">
@@ -73,12 +73,12 @@
   <!-- Mobile menu -->
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-inner">
-      <a href="#about" class="mobile-link" data-i18n="nav-about">关于</a>
-      <a href="#skills" class="mobile-link" data-i18n="nav-skills">技能</a>
-      <a href="#work" class="mobile-link" data-i18n="nav-work">作品</a>
-      <a href="#thinking" class="mobile-link" data-i18n="nav-thinking">思考</a>
+      <a href="#/about" class="mobile-link" data-i18n="nav-about">关于</a>
+      <a href="#/skills" class="mobile-link" data-i18n="nav-skills">技能</a>
+      <a href="#/work" class="mobile-link" data-i18n="nav-work">作品</a>
+      <a href="#/thinking" class="mobile-link" data-i18n="nav-thinking">思考</a>
       <a href="pentest-roadmap.html" class="mobile-link" data-i18n="nav-pentest">渗透</a>
-      <a href="#contact" class="mobile-link" data-i18n="nav-contact">联系</a>
+      <a href="#/contact" class="mobile-link" data-i18n="nav-contact">联系</a>
     </div>
   </div>
 
@@ -127,10 +127,10 @@
         </div>
       </div>
     </div>
-    <div class="panel-scroll">
-      <div class="scroll-line"></div>
-      <span data-i18n="scroll">滚动</span>
-    </div>
+    <nav class="page-nav">
+      <a href="#/about" class="page-nav-btn">下一步 →</a>
+    </nav>
+    <div class="page-indicator" id="pageIndicator"></div>
   </section>
 
   <!-- ==================== ABOUT ==================== -->
@@ -186,6 +186,10 @@
         </div>
       </div>
     </div>
+    <nav class="page-nav">
+      <a href="#/" class="page-nav-btn">← 上一步</a>
+      <a href="#/skills" class="page-nav-btn">下一步 →</a>
+    </nav>
   </section>
 
   <!-- ==================== SKILLS ==================== -->
@@ -233,6 +237,10 @@
         </div>
       </div>
     </div>
+    <nav class="page-nav">
+      <a href="#/about" class="page-nav-btn">← 上一步</a>
+      <a href="#/work" class="page-nav-btn">下一步 →</a>
+    </nav>
   </section>
 
   <!-- ==================== WORK ==================== -->
@@ -287,6 +295,10 @@
         </div>
       </div>
     </div>
+    <nav class="page-nav">
+      <a href="#/skills" class="page-nav-btn">← 上一步</a>
+      <a href="#/thinking" class="page-nav-btn">下一步 →</a>
+    </nav>
   </section>
 
   <!-- ==================== THINKING ==================== -->
@@ -325,6 +337,10 @@
         </div>
       </div>
     </div>
+    <nav class="page-nav">
+      <a href="#/work" class="page-nav-btn">← 上一步</a>
+      <a href="#/terminal" class="page-nav-btn">下一步 →</a>
+    </nav>
   </section>
 
   <!-- ==================== TERMINAL ==================== -->
@@ -363,6 +379,10 @@
         </div>
       </div>
     </div>
+    <nav class="page-nav">
+      <a href="#/thinking" class="page-nav-btn">← 上一步</a>
+      <a href="#/contact" class="page-nav-btn">下一步 →</a>
+    </nav>
   </section>
 
   <!-- ==================== CONTACT ==================== -->
@@ -412,6 +432,9 @@
         </div>
       </div>
     </div>
+    <nav class="page-nav">
+      <a href="#/terminal" class="page-nav-btn">← 上一步</a>
+    </nav>
   </section>
 
   <!-- Easter egg notification -->

@@ -151,6 +151,67 @@ document.addEventListener('DOMContentLoaded', () => {
   document.body.style.overflow = 'hidden';
   animateLoader();
 
+  // ===== HASH ROUTER =====
+  const routes = {
+    '/': 'hero',
+    '/about': 'about',
+    '/skills': 'skills',
+    '/work': 'work',
+    '/thinking': 'thinking',
+    '/terminal': 'interactive',
+    '/contact': 'contact'
+  };
+  const routeOrder = ['/', '/about', '/skills', '/work', '/thinking', '/terminal', '/contact'];
+
+  function navigateTo(hash) {
+    const route = hash.replace('#', '') || '/';
+    const panelId = routes[route] || 'hero';
+
+    // Hide all panels
+    document.querySelectorAll('.panel').forEach(p => {
+      p.classList.remove('active');
+      p.style.display = 'none';
+    });
+
+    // Show target panel
+    const target = document.getElementById(panelId);
+    if (target) {
+      target.style.display = 'flex';
+      // Trigger reflow for animation
+      target.offsetHeight;
+      target.classList.add('active');
+    }
+
+    // Update nav active state
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + route);
+    });
+
+    // Update page indicator
+    updatePageIndicator(route);
+
+    // Scroll to top
+    window.scrollTo(0, 0);
+  }
+
+  function updatePageIndicator(currentRoute) {
+    const indicator = document.getElementById('pageIndicator');
+    if (!indicator) return;
+    indicator.innerHTML = '';
+    routeOrder.forEach(route => {
+      const dot = document.createElement('span');
+      dot.className = 'page-dot' + (route === currentRoute ? ' active' : '');
+      dot.onclick = () => { window.location.hash = '#' + route; };
+      indicator.appendChild(dot);
+    });
+  }
+
+  // Listen for hash changes
+  window.addEventListener('hashchange', () => navigateTo(location.hash));
+
+  // Initial route
+  navigateTo(location.hash || '#/');
+
   // ===== CUSTOM CURSOR =====
   const dot = document.getElementById('cursorDot');
   const ring = document.getElementById('cursorRing');
