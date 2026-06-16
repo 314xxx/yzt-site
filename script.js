@@ -290,5 +290,13 @@
     updateVisits();
     applyLang(currentLang);
     handleHash();
+
+    // Hide loader after page loads
+    const loader = document.getElementById('loader');
+    if (loader) {
+      setTimeout(() => {
+        loader.classList.add('hide');
+      }, 800);
+    }
   });
 })();

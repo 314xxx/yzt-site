@@ -176,12 +176,65 @@ body::after {
   padding-top: 48px;
 }
 
+/* ===== LOADER ===== */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.6s, visibility 0.6s;
+}
+
+.loader.hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-inner {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-ring {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: loaderSpin 1s linear infinite;
+}
+
+@keyframes loaderSpin {
+  to { transform: rotate(360deg); }
+}
+
+.loader-text {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+  animation: loaderPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes loaderPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
 /* ===== SECTION ===== */
 .section {
   display: grid;
-  grid-template-columns: 180px 1fr;
-  gap: 3rem;
-  padding: 3rem 0;
+  grid-template-columns: 120px 1fr;
+  gap: 2rem;
+  padding: 2.5rem 0;
   border-bottom: 1px dashed var(--border);
   opacity: 0;
   transform: translateY(24px);
@@ -203,6 +256,62 @@ body::after {
   color: var(--accent);
   text-shadow: 0 0 40px var(--accent-glow);
   line-height: 1.2;
+}
+
+/* Glitch effect */
+.glitch {
+  position: relative;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+
+.glitch::before {
+  color: #ff006e;
+  animation: glitch-1 2s infinite linear alternate-reverse;
+  clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+}
+
+.glitch::after {
+  color: #00f5ff;
+  animation: glitch-2 2s infinite linear alternate-reverse;
+  clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+}
+
+@keyframes glitch-1 {
+  0%, 90% { transform: translate(0); }
+  91% { transform: translate(-2px, 1px); }
+  92% { transform: translate(2px, -1px); }
+  93% { transform: translate(-1px, 2px); }
+  94% { transform: translate(1px, -2px); }
+  95% { transform: translate(-2px, 0px); }
+  96% { transform: translate(2px, 1px); }
+  97% { transform: translate(0px, -1px); }
+  98% { transform: translate(-1px, 0px); }
+  99% { transform: translate(1px, 1px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes glitch-2 {
+  0%, 90% { transform: translate(0); }
+  91% { transform: translate(2px, -1px); }
+  92% { transform: translate(-2px, 1px); }
+  93% { transform: translate(1px, -2px); }
+  94% { transform: translate(-1px, 2px); }
+  95% { transform: translate(2px, 0px); }
+  96% { transform: translate(-2px, -1px); }
+  97% { transform: translate(0px, 1px); }
+  98% { transform: translate(1px, 0px); }
+  99% { transform: translate(-1px, -1px); }
+  100% { transform: translate(0); }
 }
 
 .hero-titles {

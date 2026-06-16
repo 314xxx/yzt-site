@@ -6,9 +6,17 @@
   <title>YZT</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◈</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=5.1">
+  <link rel="stylesheet" href="style.css?v=5.2">
 </head>
 <body>
+
+  <!-- LOADING SCREEN -->
+  <div class="loader" id="loader">
+    <div class="loader-inner">
+      <div class="loader-ring"></div>
+      <span class="loader-text">YZT</span>
+    </div>
+  </div>
 
   <header class="header">
     <a href="#hero" class="logo">YZT</a>
@@ -35,7 +43,7 @@
     <!-- HERO -->
     <section class="section" id="hero">
       <div class="cell-label">
-        <h1 class="hero-name">YZT</h1>
+        <h1 class="hero-name glitch" data-text="YZT">YZT</h1>
         <p class="hero-titles" data-zh="研究者 · 操作者 · 观察者" data-en="Researcher · Operator · Observer">研究者 · 操作者 · 观察者</p>
       </div>
       <div class="cell-body">
@@ -179,6 +187,6 @@
 
   <button class="back-top" id="backTop" aria-label="Back to top">↑</button>
 
-  <script src="script.js?v=5.1"></script>
+  <script src="script.js?v=5.2"></script>
 </body>
 </html>
