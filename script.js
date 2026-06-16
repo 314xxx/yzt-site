@@ -182,6 +182,10 @@ document.addEventListener('DOMContentLoaded', () => {
       target.classList.add('active');
     }
 
+    // Initialize canvas and dot matrix for this panel
+    activateCanvas(panelId);
+    initDotMatrix(panelId);
+
     // Update nav active state
     document.querySelectorAll('.nav-link').forEach(link => {
       link.classList.toggle('active', link.getAttribute('href') === '#' + route);
@@ -910,65 +914,63 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('buildTime').textContent =
     'BUILT ' + new Date().toISOString().slice(0, 10).toUpperCase();
 
-  // ===== DOT MATRIX (interactive on blue blocks) =====
-  function initDotMatrix() {
-    const canvases = document.querySelectorAll('.dot-matrix');
-    let mouseX = 0, mouseY = 0;
+  // ===== DOT MATRIX (lazy init per panel) =====
+  const dotMatrixState = {};
+  let globalMouseX = 0, globalMouseY = 0;
 
-    document.addEventListener('mousemove', e => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    });
+  document.addEventListener('mousemove', e => {
+    globalMouseX = e.clientX;
+    globalMouseY = e.clientY;
+  });
 
-    canvases.forEach(canvas => {
-      const parent = canvas.closest('.panel-content');
-      if (!parent) return;
+  function initDotMatrix(panelId) {
+    const panel = document.getElementById(panelId);
+    if (!panel) return;
+    const canvas = panel.querySelector('.dot-matrix');
+    if (!canvas) return;
+    if (dotMatrixState[panelId]) return; // already initialized
 
-      const ctx = canvas.getContext('2d');
-      const dotSpacing = 24;
-      const dotRadius = 1.5;
-      const influenceRadius = 150;
+    const ctx = canvas.getContext('2d');
+    const dotSpacing = 28;
+    const dotRadius = 1.5;
+    const influenceRadius = 180;
 
-      function resize() {
-        canvas.width = parent.offsetWidth;
-        canvas.height = parent.offsetHeight;
-      }
-      resize();
-      window.addEventListener('resize', resize);
+    function resize() {
+      canvas.width = panel.querySelector('.panel-content').offsetWidth;
+      canvas.height = panel.querySelector('.panel-content').offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
 
-      function draw() {
-        const w = canvas.width, h = canvas.height;
-        ctx.clearRect(0, 0, w, h);
+    function draw() {
+      const w = canvas.width, h = canvas.height;
+      if (w === 0 || h === 0) { requestAnimationFrame(draw); return; }
+      ctx.clearRect(0, 0, w, h);
 
-        // Get parent position relative to viewport
-        const rect = parent.getBoundingClientRect();
-        const localMouseX = mouseX - rect.left;
-        const localMouseY = mouseY - rect.top;
+      const rect = canvas.getBoundingClientRect();
+      const localMouseX = globalMouseX - rect.left;
+      const localMouseY = globalMouseY - rect.top;
 
-        for (let x = dotSpacing; x < w; x += dotSpacing) {
-          for (let y = dotSpacing; y < h; y += dotSpacing) {
-            const dx = x - localMouseX;
-            const dy = y - localMouseY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
+      for (let x = dotSpacing; x < w; x += dotSpacing) {
+        for (let y = dotSpacing; y < h; y += dotSpacing) {
+          const dx = x - localMouseX;
+          const dy = y - localMouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
 
-            const influence = Math.max(0, 1 - dist / influenceRadius);
-            const radius = dotRadius + influence * 3;
-            const alpha = 0.15 + influence * 0.5;
+          const influence = Math.max(0, 1 - dist / influenceRadius);
+          const radius = dotRadius + influence * 3;
+          const alpha = 0.2 + influence * 0.6;
 
-            ctx.beginPath();
-            ctx.arc(x, y, radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-            ctx.fill();
-          }
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+          ctx.fill();
         }
-
-        requestAnimationFrame(draw);
       }
-      draw();
-    });
+      requestAnimationFrame(draw);
+    }
+    draw();
+    dotMatrixState[panelId] = true;
   }
-
-  // Initialize dot matrix after a short delay
-  setTimeout(initDotMatrix, 500);
 
 });

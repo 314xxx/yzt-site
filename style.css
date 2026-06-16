@@ -83,17 +83,17 @@ a { color: inherit; }
   overflow: hidden;
 }
 
-/* Heavy grain texture — applied to content blocks */
+/* Panel base - white background */
 .panel::before {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: var(--bg);
+  background: #ffffff;
   pointer-events: none;
 }
 
-/* No panel-level overlay needed */
+/* Panel overlay - not needed */
 .panel::after {
   display: none;
 }
@@ -193,11 +193,11 @@ a { color: inherit; }
 .white-texture {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: 1;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(41, 98, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(41, 98, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(41, 98, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(41, 98, 255, 0.04) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
@@ -205,9 +205,9 @@ a { color: inherit; }
 .white-dots {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: 1;
   pointer-events: none;
-  background-image: radial-gradient(circle 1px at 20px 20px, rgba(41, 98, 255, 0.08) 1px, transparent 1px);
+  background-image: radial-gradient(circle 1.5px at 20px 20px, rgba(41, 98, 255, 0.1) 1.5px, transparent 1.5px);
   background-size: 40px 40px;
 }
 
