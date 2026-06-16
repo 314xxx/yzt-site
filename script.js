@@ -228,11 +228,10 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollProgress.style.width = total > 0 ? (window.scrollY / total * 100) + '%' : '0%';
   });
 
+  // Navigation for anchor links (no smooth scroll)
   document.querySelectorAll('a[href^="#"]').forEach(link => {
     link.addEventListener('click', e => {
-      e.preventDefault();
-      const target = document.querySelector(link.getAttribute('href'));
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Let default behavior handle it (jump to anchor)
       mobileMenu.classList.remove('active');
       navMenuBtn.classList.remove('active');
     });
