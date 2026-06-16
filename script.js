@@ -389,10 +389,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== VISITOR IP =====
   const ipEl = document.getElementById('visitorIP');
   if (ipEl) {
-    fetch('https://api.ipify.org?format=json')
-      .then(r => r.json())
-      .then(data => { ipEl.textContent = data.ip; })
-      .catch(() => { ipEl.textContent = '未知'; });
+    fetch('https://api.ip.sb/ip')
+      .then(r => r.text())
+      .then(ip => { ipEl.textContent = ip.trim(); })
+      .catch(() => {
+        fetch('https://ip.3322.net')
+          .then(r => r.text())
+          .then(ip => { ipEl.textContent = ip.trim(); })
+          .catch(() => { ipEl.textContent = '未知'; });
+      });
   }
 
   // ===== NAV =====
