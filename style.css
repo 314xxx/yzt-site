@@ -97,17 +97,26 @@ a { color: inherit; }
   display: none;
 }
 
+#hero::before {
+  background: transparent;
+}
+
 /* Hero: compact, everything visible without scroll */
 #hero {
-  min-height: auto;
-  max-height: 100vh;
+  min-height: 100vh;
+  max-height: none;
   align-items: flex-start;
   padding: 0;
+  background: #2962ff;
 }
 
 #hero .panel-content {
-  padding: 20px 24px;
-  margin: 56px 12px 12px;
+  padding: 80px 48px 32px;
+  margin: 0;
+  background: transparent;
+  box-shadow: none;
+  max-width: 100%;
+  min-height: 100vh;
 }
 
 /* ---- Panel Backgrounds — White base ---- */
@@ -169,6 +178,7 @@ a { color: inherit; }
 
 @media (max-width: 768px) {
   .panel-content { padding: 80px 24px; }
+  #hero .panel-content { padding: 60px 20px 24px; }
 }
 
 /* ---- Loader ---- */
