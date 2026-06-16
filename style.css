@@ -102,7 +102,7 @@ a { color: inherit; }
 }
 
 /* Hero: white bg, blue card wraps content */
-#hero {
+#hero.panel {
   min-height: auto !important;
   height: auto !important;
   align-items: flex-start;
@@ -181,7 +181,8 @@ a { color: inherit; }
 
 @media (max-width: 768px) {
   .panel-content { padding: 80px 24px; }
-  #hero .panel-content { padding: 60px 20px 24px; }
+  #hero.panel { min-height: auto; height: auto; }
+  #hero .panel-content { padding: 24px 16px 20px; margin: 12px 16px 16px; }
 }
 
 /* ---- Loader ---- */
