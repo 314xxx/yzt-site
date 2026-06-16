@@ -101,9 +101,9 @@ a { color: inherit; }
   display: block;
 }
 
-/* Hero: white bg, blue area with texture */
+/* Hero: white bg, blue card wraps content */
 #hero {
-  min-height: 90vh;
+  min-height: auto;
   align-items: flex-start;
   background: var(--bg);
 }

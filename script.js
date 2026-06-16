@@ -376,15 +376,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== UPTIME =====
   const uptimeEl = document.getElementById('uptime');
   const startTime = Date.now();
-  function updateUptime() {
-    const elapsed = Math.floor((Date.now() - startTime) / 1000);
-    const h = String(Math.floor(elapsed / 3600)).padStart(2, '0');
-    const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
-    const s = String(elapsed % 60).padStart(2, '0');
-    uptimeEl.textContent = h + ':' + m + ':' + s;
-    requestAnimationFrame(updateUptime);
+  if (uptimeEl) {
+    setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const h = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+      const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
+      const s = String(elapsed % 60).padStart(2, '0');
+      uptimeEl.textContent = h + ':' + m + ':' + s;
+    }, 1000);
   }
-  updateUptime();
 
   // ===== VISITOR IP =====
   const ipEl = document.getElementById('visitorIP');
