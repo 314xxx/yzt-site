@@ -387,6 +387,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   updateUptime();
 
+  // ===== VISITOR IP =====
+  const ipEl = document.getElementById('visitorIP');
+  if (ipEl) {
+    fetch('https://api.ipify.org?format=json')
+      .then(r => r.json())
+      .then(data => { ipEl.textContent = data.ip; })
+      .catch(() => { ipEl.textContent = '未知'; });
+  }
+
   // ===== NAV =====
   const nav = document.getElementById('nav');
   const scrollProgress = document.getElementById('scrollProgress');
@@ -647,8 +656,8 @@ document.addEventListener('DOMContentLoaded', () => {
       '', 'Type anything to explore.',
     ],
     whoami: () => currentLang === 'zh' ?
-      ['yzt — 研究员 / 操作员', '权限等级: ████████████', '位置: [已隐藏]'] :
-      ['yzt — researcher / operator', 'clearance: ████████████', 'location: [REDACTED]'],
+      ['yzt — 研究员 / 操作员', '权限等级: 未知', '位置: [访问者]'] :
+      ['yzt — researcher / operator', 'clearance: unknown', 'location: [visitor]'],
     about: () => currentLang === 'zh' ?
       ['一个站在AI、安全和涌现模式交汇处的观察者。', '在系统崩溃、进化和重组的空间中运作。'] :
       ['An observer at the intersection of AI, security,', 'and emergent patterns. Operating in the spaces', 'where systems break, evolve, and recombine.'],

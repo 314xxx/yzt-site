@@ -97,6 +97,13 @@ a { color: inherit; }
   display: none;
 }
 
+/* Hero: fit content instead of full viewport, show rounded corners */
+#hero {
+  min-height: auto;
+  padding-top: 80px;
+  padding-bottom: 40px;
+}
+
 /* ---- Panel Backgrounds — White base ---- */
 [data-bg="neural"],
 [data-bg="waves"],
