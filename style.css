@@ -101,22 +101,19 @@ a { color: inherit; }
   background: transparent;
 }
 
-/* Hero: compact, everything visible without scroll */
+/* Hero: full-screen blue, no card */
 #hero {
   min-height: 100vh;
-  max-height: none;
-  align-items: flex-start;
-  padding: 0;
   background: #2962ff;
 }
 
 #hero .panel-content {
-  padding: 80px 48px 32px;
+  padding: 80px 48px 40px;
   margin: 0;
   background: transparent;
   box-shadow: none;
+  border-radius: 0;
   max-width: 100%;
-  min-height: 100vh;
 }
 
 /* ---- Panel Backgrounds — White base ---- */
