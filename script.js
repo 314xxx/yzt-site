@@ -914,8 +914,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('buildTime').textContent =
     'BUILT ' + new Date().toISOString().slice(0, 10).toUpperCase();
 
-  // ===== DOT MATRIX (lazy init per panel) =====
-  const dotMatrixState = {};
+  // ===== DOT MATRIX (interactive on blue blocks) =====
+  const dotMatrixAnimations = {};
   let globalMouseX = 0, globalMouseY = 0;
 
   document.addEventListener('mousemove', e => {
@@ -928,23 +928,43 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!panel) return;
     const canvas = panel.querySelector('.dot-matrix');
     if (!canvas) return;
-    if (dotMatrixState[panelId]) return; // already initialized
+    const content = panel.querySelector('.panel-content');
+    if (!content) return;
+
+    // Cancel previous animation if exists
+    if (dotMatrixAnimations[panelId]) {
+      cancelAnimationFrame(dotMatrixAnimations[panelId]);
+    }
 
     const ctx = canvas.getContext('2d');
     const dotSpacing = 28;
     const dotRadius = 1.5;
-    const influenceRadius = 180;
+    const influenceRadius = 200;
 
     function resize() {
-      canvas.width = panel.querySelector('.panel-content').offsetWidth;
-      canvas.height = panel.querySelector('.panel-content').offsetHeight;
+      const w = content.offsetWidth;
+      const h = content.offsetHeight;
+      if (w > 0 && h > 0) {
+        canvas.width = w;
+        canvas.height = h;
+      }
     }
-    resize();
+
+    // Delay resize to ensure layout is complete
+    setTimeout(() => {
+      resize();
+      draw();
+    }, 100);
+
     window.addEventListener('resize', resize);
 
     function draw() {
       const w = canvas.width, h = canvas.height;
-      if (w === 0 || h === 0) { requestAnimationFrame(draw); return; }
+      if (w === 0 || h === 0) {
+        dotMatrixAnimations[panelId] = requestAnimationFrame(draw);
+        return;
+      }
+
       ctx.clearRect(0, 0, w, h);
 
       const rect = canvas.getBoundingClientRect();
@@ -958,8 +978,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           const influence = Math.max(0, 1 - dist / influenceRadius);
-          const radius = dotRadius + influence * 3;
-          const alpha = 0.2 + influence * 0.6;
+          const radius = dotRadius + influence * 4;
+          const alpha = 0.15 + influence * 0.65;
 
           ctx.beginPath();
           ctx.arc(x, y, radius, 0, Math.PI * 2);
@@ -967,10 +987,8 @@ document.addEventListener('DOMContentLoaded', () => {
           ctx.fill();
         }
       }
-      requestAnimationFrame(draw);
+      dotMatrixAnimations[panelId] = requestAnimationFrame(draw);
     }
-    draw();
-    dotMatrixState[panelId] = true;
   }
 
 });

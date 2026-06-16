@@ -80,7 +80,6 @@ a { color: inherit; }
   align-items: center;
   justify-content: center;
   scroll-snap-align: start;
-  overflow: hidden;
 }
 
 /* Panel base - white background */
@@ -129,10 +128,12 @@ a { color: inherit; }
 /* Dot matrix canvas overlay */
 .dot-matrix {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.3;
 }
 
 /* Heavy grain noise overlay — clearly visible */
@@ -318,8 +319,11 @@ a { color: inherit; }
 .title-word[data-delay="3"] { animation-delay: 1.65s; }
 .title-word[data-delay="4"] { animation-delay: 1.8s; }
 .title-word.accent { 
-  color: #38bdf8; 
-  font-style: normal; 
+  color: #ffffff; 
+  font-style: normal;
+  font-weight: 700;
+  font-size: 1.1em;
+  letter-spacing: 0.05em; 
   
 }
 .hero-desc { 
