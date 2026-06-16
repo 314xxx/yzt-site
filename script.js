@@ -182,8 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
       target.classList.add('active');
     }
 
-    // Initialize canvas and dot matrix for this panel
-    activateCanvas(panelId);
+    // Initialize dot matrix for this panel
     initDotMatrix(panelId);
 
     // Update nav active state
@@ -990,12 +989,13 @@ document.addEventListener('DOMContentLoaded', () => {
       animId = requestAnimationFrame(draw);
     }
 
-    // Start immediately, will draw once dimensions are ready
+    // Start immediately, retry resize for late layouts
     draw();
-
-    // Retry resize after a delay in case layout wasn't ready
-    setTimeout(resize, 200);
-    setTimeout(resize, 500);
+    requestAnimationFrame(resize);
+    setTimeout(resize, 100);
+    setTimeout(resize, 300);
+    setTimeout(resize, 600);
+    setTimeout(resize, 1000);
   }
 
 });
