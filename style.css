@@ -118,7 +118,6 @@ a { color: inherit; }
   padding: 80px 48px;
   background: #2962ff;
   color: #ffffff;
-  overflow: hidden;
   border-radius: 16px;
   margin-top: 40px;
   margin-bottom: 40px;
@@ -319,12 +318,10 @@ a { color: inherit; }
 .title-word[data-delay="3"] { animation-delay: 1.65s; }
 .title-word[data-delay="4"] { animation-delay: 1.8s; }
 .title-word.accent { 
-  color: #ffffff; 
+  color: #7dd3fc; 
   font-style: normal;
   font-weight: 700;
-  font-size: 1.1em;
-  letter-spacing: 0.05em; 
-  
+}
 }
 .hero-desc { 
   font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.8; 

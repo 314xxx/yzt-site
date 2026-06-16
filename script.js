@@ -915,8 +915,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'BUILT ' + new Date().toISOString().slice(0, 10).toUpperCase();
 
   // ===== DOT MATRIX (interactive on blue blocks) =====
-  const dotMatrixAnimations = {};
-  let globalMouseX = 0, globalMouseY = 0;
+  let globalMouseX = -1000, globalMouseY = -1000;
 
   document.addEventListener('mousemove', e => {
     globalMouseX = e.clientX;
@@ -928,67 +927,66 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!panel) return;
     const canvas = panel.querySelector('.dot-matrix');
     if (!canvas) return;
-    const content = panel.querySelector('.panel-content');
-    if (!content) return;
-
-    // Cancel previous animation if exists
-    if (dotMatrixAnimations[panelId]) {
-      cancelAnimationFrame(dotMatrixAnimations[panelId]);
-    }
 
     const ctx = canvas.getContext('2d');
     const dotSpacing = 28;
-    const dotRadius = 1.5;
+    const dotBaseRadius = 1.5;
     const influenceRadius = 200;
+    let animId = null;
 
     function resize() {
-      const w = content.offsetWidth;
-      const h = content.offsetHeight;
-      if (w > 0 && h > 0) {
-        canvas.width = w;
-        canvas.height = h;
+      const parent = canvas.parentElement;
+      if (parent) {
+        const w = parent.offsetWidth;
+        const h = parent.offsetHeight;
+        if (w > 0 && h > 0) {
+          canvas.width = w;
+          canvas.height = h;
+        }
       }
     }
 
-    // Delay resize to ensure layout is complete
-    setTimeout(() => {
-      resize();
-      draw();
-    }, 100);
-
+    // Start resize + draw loop
+    resize();
     window.addEventListener('resize', resize);
 
     function draw() {
-      const w = canvas.width, h = canvas.height;
-      if (w === 0 || h === 0) {
-        dotMatrixAnimations[panelId] = requestAnimationFrame(draw);
-        return;
-      }
+      const w = canvas.width;
+      const h = canvas.height;
 
-      ctx.clearRect(0, 0, w, h);
+      if (w > 0 && h > 0) {
+        ctx.clearRect(0, 0, w, h);
 
-      const rect = canvas.getBoundingClientRect();
-      const localMouseX = globalMouseX - rect.left;
-      const localMouseY = globalMouseY - rect.top;
+        const rect = canvas.getBoundingClientRect();
+        const mx = globalMouseX - rect.left;
+        const my = globalMouseY - rect.top;
 
-      for (let x = dotSpacing; x < w; x += dotSpacing) {
-        for (let y = dotSpacing; y < h; y += dotSpacing) {
-          const dx = x - localMouseX;
-          const dy = y - localMouseY;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+        for (let x = dotSpacing; x < w; x += dotSpacing) {
+          for (let y = dotSpacing; y < h; y += dotSpacing) {
+            const dx = x - mx;
+            const dy = y - my;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const influence = Math.max(0, 1 - dist / influenceRadius);
+            const r = dotBaseRadius + influence * 4;
+            const a = 0.15 + influence * 0.65;
 
-          const influence = Math.max(0, 1 - dist / influenceRadius);
-          const radius = dotRadius + influence * 4;
-          const alpha = 0.15 + influence * 0.65;
-
-          ctx.beginPath();
-          ctx.arc(x, y, radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-          ctx.fill();
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${a})`;
+            ctx.fill();
+          }
         }
       }
-      dotMatrixAnimations[panelId] = requestAnimationFrame(draw);
+
+      animId = requestAnimationFrame(draw);
     }
+
+    // Start immediately, will draw once dimensions are ready
+    draw();
+
+    // Retry resize after a delay in case layout wasn't ready
+    setTimeout(resize, 200);
+    setTimeout(resize, 500);
   }
 
 });
