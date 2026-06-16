@@ -28,6 +28,7 @@
   --text-dim: #e8e8e8a0;
   --border: #ffac0222;
   --green: #4ade80;
+  --serif: 'Noto Serif SC', 'Playfair Display', 'Georgia', serif;
   --scanline: rgba(0,0,0,0.03);
 }
 
@@ -44,6 +45,7 @@
   --text-dim: #1a1a2e88;
   --border: #1e3a8a18;
   --green: #16a34a;
+  --serif: 'Noto Serif SC', 'Playfair Display', 'Georgia', serif;
   --scanline: rgba(0,0,0,0.01);
 }
 
@@ -208,6 +210,41 @@ body::after {
   letter-spacing: 0.15em;
   color: var(--accent-dim);
   margin-top: 0.5rem;
+}
+
+/* ===== HERO BIG TITLE ===== */
+.hero-big-title {
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.hero-line {
+  display: block;
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  opacity: 0;
+  transform: translateY(40px);
+  animation: heroSlideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-line:nth-child(1) { animation-delay: 0.2s; }
+.hero-line:nth-child(2) { animation-delay: 0.4s; }
+.hero-line:nth-child(3) { animation-delay: 0.6s; }
+
+.hero-line.accent {
+  color: var(--accent);
+  text-shadow: 0 0 60px var(--accent-glow);
+}
+
+@keyframes heroSlideIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ===== TERMINAL ===== */
@@ -556,6 +593,10 @@ body::after {
 
   .cell-label { position: static; }
   .hero-name { font-size: 1.4rem; }
+
+  .hero-line {
+    font-size: clamp(2rem, 10vw, 3.5rem);
+  }
 
   .stats { gap: 0.5rem; }
   .stat { padding: 0.6rem; }
