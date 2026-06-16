@@ -853,6 +853,321 @@ document.addEventListener('DOMContentLoaded', () => {
     if (grid) grid.style.transform = `translateY(${window.scrollY * 0.3}px)`;
   });
 
+  // ===== SECTION IMAGES (Nous Research style) =====
+  function initSectionImages() {
+    const canvases = document.querySelectorAll('.image-canvas');
+    
+    canvases.forEach(canvas => {
+      const ctx = canvas.getContext('2d');
+      const type = canvas.getAttribute('data-type');
+      
+      // Set canvas size
+      function resize() {
+        const parent = canvas.parentElement;
+        canvas.width = parent.offsetWidth * 2;
+        canvas.height = parent.offsetHeight * 2;
+        ctx.scale(2, 2);
+      }
+      resize();
+      window.addEventListener('resize', resize);
+      
+      const width = () => canvas.offsetWidth;
+      const height = () => canvas.offsetHeight;
+      
+      // Different visualization types
+      switch(type) {
+        case 'neural':
+          drawNeural(ctx, width, height);
+          break;
+        case 'matrix':
+          drawMatrix(ctx, width, height);
+          break;
+        case 'waves':
+          drawWaves(ctx, width, height);
+          break;
+        case 'particles':
+          drawParticles(ctx, width, height);
+          break;
+        case 'fractal':
+          drawFractal(ctx, width, height);
+          break;
+        case 'grid':
+          drawGrid(ctx, width, height);
+          break;
+      }
+    });
+  }
+  
+  // Neural network visualization
+  function drawNeural(ctx, width, height) {
+    let time = 0;
+    const nodes = [];
+    for (let i = 0; i < 30; i++) {
+      nodes.push({
+        x: Math.random() * width(),
+        y: Math.random() * height(),
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: Math.random() * 3 + 2
+      });
+    }
+    
+    function animate() {
+      const w = width(), h = height();
+      ctx.clearRect(0, 0, w, h);
+      
+      // Background
+      ctx.fillStyle = '#0077b6';
+      ctx.fillRect(0, 0, w, h);
+      
+      // Update nodes
+      nodes.forEach(node => {
+        node.x += node.vx;
+        node.y += node.vy;
+        if (node.x < 0 || node.x > w) node.vx *= -1;
+        if (node.y < 0 || node.y > h) node.vy *= -1;
+      });
+      
+      // Draw connections
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 200) {
+            ctx.globalAlpha = 1 - dist / 200;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      
+      // Draw nodes
+      ctx.globalAlpha = 1;
+      nodes.forEach(node => {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      
+      time++;
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
+  
+  // Matrix rain visualization
+  function drawMatrix(ctx, width, height) {
+    const fontSize = 14;
+    const chars = '01アイウエオカキクケコサシスセソ';
+    
+    function animate() {
+      const w = width(), h = height();
+      ctx.fillStyle = 'rgba(0, 119, 182, 0.05)';
+      ctx.fillRect(0, 0, w, h);
+      
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.font = fontSize + 'px JetBrains Mono';
+      
+      for (let x = 0; x < w; x += fontSize) {
+        const y = Math.random() * h;
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(char, x, y);
+      }
+      
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
+  
+  // Waves visualization
+  function drawWaves(ctx, width, height) {
+    let time = 0;
+    
+    function animate() {
+      const w = width(), h = height();
+      ctx.clearRect(0, 0, w, h);
+      
+      // Background
+      ctx.fillStyle = '#00b4d8';
+      ctx.fillRect(0, 0, w, h);
+      
+      // Draw waves
+      const waves = [
+        { amp: 30, freq: 0.01, speed: 0.02, color: 'rgba(255, 255, 255, 0.3)' },
+        { amp: 20, freq: 0.015, speed: 0.015, color: 'rgba(255, 255, 255, 0.2)' },
+        { amp: 25, freq: 0.008, speed: 0.025, color: 'rgba(255, 255, 255, 0.15)' }
+      ];
+      
+      waves.forEach(wave => {
+        ctx.beginPath();
+        ctx.moveTo(0, h / 2);
+        for (let x = 0; x <= w; x++) {
+          const y = h / 2 + Math.sin(x * wave.freq + time * wave.speed) * wave.amp
+                  + Math.sin(x * wave.freq * 0.5 + time * wave.speed * 1.3) * wave.amp * 0.5;
+          ctx.lineTo(x, y);
+        }
+        ctx.lineTo(w, h);
+        ctx.lineTo(0, h);
+        ctx.closePath();
+        ctx.fillStyle = wave.color;
+        ctx.fill();
+      });
+      
+      time++;
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
+  
+  // Particles visualization
+  function drawParticles(ctx, width, height) {
+    const particles = [];
+    for (let i = 0; i < 50; i++) {
+      particles.push({
+        x: Math.random() * width(),
+        y: Math.random() * height(),
+        vx: (Math.random() - 0.5) * 2,
+        vy: (Math.random() - 0.5) * 2,
+        radius: Math.random() * 4 + 1
+      });
+    }
+    
+    function animate() {
+      const w = width(), h = height();
+      ctx.clearRect(0, 0, w, h);
+      
+      // Background
+      ctx.fillStyle = '#005f73';
+      ctx.fillRect(0, 0, w, h);
+      
+      // Update particles
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > w) p.vx *= -1;
+        if (p.y < 0 || p.y > h) p.vy *= -1;
+      });
+      
+      // Draw particles
+      particles.forEach(p => {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      
+      // Draw connections
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 150) {
+            ctx.globalAlpha = 1 - dist / 150;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.globalAlpha = 1;
+      
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
+  
+  // Fractal visualization
+  function drawFractal(ctx, width, height) {
+    let time = 0;
+    
+    function animate() {
+      const w = width(), h = height();
+      ctx.clearRect(0, 0, w, h);
+      
+      // Background
+      ctx.fillStyle = '#0a9396';
+      ctx.fillRect(0, 0, w, h);
+      
+      // Draw fractal-like pattern
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = 1;
+      
+      for (let i = 0; i < 20; i++) {
+        const x = w / 2 + Math.cos(time * 0.01 + i * 0.5) * 200;
+        const y = h / 2 + Math.sin(time * 0.01 + i * 0.3) * 200;
+        const radius = 50 + Math.sin(time * 0.02 + i) * 30;
+        
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      
+      time++;
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
+  
+  // Grid visualization
+  function drawGrid(ctx, width, height) {
+    let time = 0;
+    
+    function animate() {
+      const w = width(), h = height();
+      ctx.clearRect(0, 0, w, h);
+      
+      // Background
+      ctx.fillStyle = '#94d2bd';
+      ctx.fillRect(0, 0, w, h);
+      
+      // Draw grid
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.lineWidth = 1;
+      
+      const gridSize = 40;
+      for (let x = 0; x < w; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (let y = 0; y < h; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+      
+      // Animate some grid points
+      for (let x = 0; x < w; x += gridSize) {
+        for (let y = 0; y < h; y += gridSize) {
+          const offset = Math.sin(time * 0.05 + x * 0.01 + y * 0.01) * 10;
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+          ctx.beginPath();
+          ctx.arc(x + offset, y + offset, 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      
+      time++;
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
+  
+  // Initialize section images
+  initSectionImages();
+
   // ===== BUILD TIME =====
   document.getElementById('buildTime').textContent =
     'BUILT ' + new Date().toISOString().slice(0, 10).toUpperCase();
