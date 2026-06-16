@@ -182,6 +182,9 @@ document.addEventListener('DOMContentLoaded', () => {
       target.classList.add('active');
     }
 
+    // Initialize canvas for this panel
+    activateCanvas(panelId);
+
     // Update nav active state
     document.querySelectorAll('.nav-link').forEach(link => {
       link.classList.toggle('active', link.getAttribute('href') === '#' + route);
@@ -914,39 +917,61 @@ document.addEventListener('DOMContentLoaded', () => {
     if (grid) grid.style.transform = `translateY(${window.scrollY * 0.3}px)`;
   });
 
-  // ===== PANEL BACKGROUNDS =====
+  // ===== PANEL BACKGROUNDS (lazy init) =====
+  const panelCanvasMap = {};
+  const panelAnimFrames = {};
+
   function initPanelBackgrounds() {
     const canvases = document.querySelectorAll('.panel-bg');
-    
     canvases.forEach(canvas => {
-      const ctx = canvas.getContext('2d');
+      const panel = canvas.closest('.panel');
+      if (!panel) return;
       const type = canvas.getAttribute('data-type');
-      
-      function resize() {
-        const parent = canvas.parentElement;
-        canvas.width = parent.offsetWidth;
-        canvas.height = parent.offsetHeight;
-      }
-      resize();
-      window.addEventListener('resize', resize);
-      
-      const width = () => canvas.width;
-      const height = () => canvas.height;
-      
-      switch(type) {
-        case 'neural': drawNeural(ctx, width, height); break;
-        case 'waves': drawWaves(ctx, width, height); break;
-        case 'grid': drawGrid(ctx, width, height); break;
-        case 'particles': drawParticles(ctx, width, height); break;
-        case 'fractal': drawFractal(ctx, width, height); break;
-        case 'matrix': drawMatrixBg(ctx, width, height); break;
-        case 'dots': drawDots(ctx, width, height); break;
-      }
+      const panelId = panel.id;
+      panelCanvasMap[panelId] = { canvas, type };
     });
+  }
+
+  function activateCanvas(panelId) {
+    const info = panelCanvasMap[panelId];
+    if (!info) return;
+    const { canvas, type } = info;
+    const panel = canvas.closest('.panel');
+    if (!panel) return;
+
+    // Cancel any existing animation for this panel
+    if (panelAnimFrames[panelId]) {
+      cancelAnimationFrame(panelAnimFrames[panelId]);
+    }
+
+    // Resize canvas to fill the now-visible panel
+    canvas.width = panel.offsetWidth || window.innerWidth;
+    canvas.height = panel.offsetHeight || window.innerHeight;
+
+    const ctx = canvas.getContext('2d');
+    const width = () => canvas.width;
+    const height = () => canvas.height;
+
+    // Handle resize
+    const resizeHandler = () => {
+      canvas.width = panel.offsetWidth || window.innerWidth;
+      canvas.height = panel.offsetHeight || window.innerHeight;
+    };
+    window.addEventListener('resize', resizeHandler);
+
+    switch(type) {
+      case 'neural': drawNeural(ctx, width, height, panelId); break;
+      case 'waves': drawWaves(ctx, width, height, panelId); break;
+      case 'grid': drawGrid(ctx, width, height, panelId); break;
+      case 'particles': drawParticles(ctx, width, height, panelId); break;
+      case 'fractal': drawFractal(ctx, width, height, panelId); break;
+      case 'matrix': drawMatrixBg(ctx, width, height, panelId); break;
+      case 'dots': drawDots(ctx, width, height, panelId); break;
+    }
   }
   
   // Neural network visualization
-  function drawNeural(ctx, width, height) {
+  function drawNeural(ctx, width, height, panelId) {
     let time = 0;
     const nodes = [];
     for (let i = 0; i < 30; i++) {
@@ -1003,13 +1028,13 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       
       time++;
-      requestAnimationFrame(animate);
+      panelAnimFrames[panelId] = requestAnimationFrame(animate);
     }
     animate();
   }
-  
+
   // Matrix rain visualization
-  function drawMatrixBg(ctx, width, height) {
+  function drawMatrixBg(ctx, width, height, panelId) {
     const fontSize = 14;
     const chars = '01アイウエオカキクケコサシスセソ';
     
@@ -1027,13 +1052,13 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fillText(char, x, y);
       }
       
-      requestAnimationFrame(animate);
+      panelAnimFrames[panelId] = requestAnimationFrame(animate);
     }
     animate();
   }
-  
+
   // Waves visualization
-  function drawWaves(ctx, width, height) {
+  function drawWaves(ctx, width, height, panelId) {
     let time = 0;
     
     function animate() {
@@ -1067,13 +1092,13 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       
       time++;
-      requestAnimationFrame(animate);
+      panelAnimFrames[panelId] = requestAnimationFrame(animate);
     }
     animate();
   }
-  
+
   // Particles visualization
-  function drawParticles(ctx, width, height) {
+  function drawParticles(ctx, width, height, panelId) {
     const particles = [];
     for (let i = 0; i < 50; i++) {
       particles.push({
@@ -1128,13 +1153,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       ctx.globalAlpha = 1;
       
-      requestAnimationFrame(animate);
+      panelAnimFrames[panelId] = requestAnimationFrame(animate);
     }
     animate();
   }
-  
+
   // Fractal visualization
-  function drawFractal(ctx, width, height) {
+  function drawFractal(ctx, width, height, panelId) {
     let time = 0;
     
     function animate() {
@@ -1160,13 +1185,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
       time++;
-      requestAnimationFrame(animate);
+      panelAnimFrames[panelId] = requestAnimationFrame(animate);
     }
     animate();
   }
-  
+
   // Grid visualization
-  function drawGrid(ctx, width, height) {
+  function drawGrid(ctx, width, height, panelId) {
     let time = 0;
     
     function animate() {
@@ -1207,13 +1232,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
       time++;
-      requestAnimationFrame(animate);
+      panelAnimFrames[panelId] = requestAnimationFrame(animate);
     }
     animate();
   }
-  
+
   // Dots visualization
-  function drawDots(ctx, width, height) {
+  function drawDots(ctx, width, height, panelId) {
     let time = 0;
     
     function animate() {
@@ -1233,7 +1258,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
       time++;
-      requestAnimationFrame(animate);
+      panelAnimFrames[panelId] = requestAnimationFrame(animate);
     }
     animate();
   }
