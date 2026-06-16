@@ -104,22 +104,22 @@ a { color: inherit; }
   opacity: 0.4;
 }
 
-/* Semi-transparent overlay */
+/* Semi-transparent overlay — let canvas bleed through */
 .panel::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 2;
   background: var(--bg);
-  opacity: 0.75;
+  opacity: 0.35;
   pointer-events: none;
 }
 
 [data-theme="dark"] .panel::after {
-  opacity: 0.8;
+  opacity: 0.55;
 }
 
-/* Content - on top of everything */
+/* Content - on top of everything, glass card for readability */
 .panel-content {
   position: relative;
   z-index: 3;
@@ -127,6 +127,14 @@ a { color: inherit; }
   max-width: 1200px;
   margin: 0 auto;
   padding: 120px 48px;
+  background: rgba(248, 250, 252, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 2px;
+}
+
+[data-theme="dark"] .panel-content {
+  background: rgba(12, 18, 34, 0.7);
 }
 
 @media (max-width: 768px) {
@@ -286,6 +294,7 @@ body:hover .cursor-glow { opacity: 1; }
   font-size: clamp(42px, 6vw, 80px); font-weight: 400;
   line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 32px;
   font-style: italic;
+  text-shadow: 0 2px 12px rgba(14, 165, 233, 0.15);
 }
 .title-line { display: block; overflow: hidden; }
 .title-word { display: inline-block; opacity: 0; transform: translateY(100%); animation: reveal 0.8s cubic-bezier(0.16,1,0.3,1) forwards; }
@@ -318,7 +327,7 @@ body:hover .cursor-glow { opacity: 1; }
 .section-title {
   font-family: 'Libre Baskerville', serif; font-size: 14px; letter-spacing: 4px;
   text-transform: uppercase; text-decoration: underline;
-  text-underline-offset: 8px; text-decoration-color: var(--dashed);
+  text-underline-offset: 8px; text-decoration-color: var(--accent);
 }
 .section-line { flex: 1; height: 1px; background: var(--dashed); }
 .meta-tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--text-3); }
@@ -378,7 +387,7 @@ body:hover .cursor-glow { opacity: 1; }
 
 /* ---- Work Cards ---- */
 .work-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.work-card { background: var(--bg-card); border: 1px dashed var(--dashed); border-radius: 2px; padding: 28px; backdrop-filter: blur(20px); transition: all 0.5s; cursor: default; position: relative; overflow: hidden; }
+.work-card { background: rgba(248, 250, 252, 0.85); border: 1px dashed var(--dashed); border-radius: 2px; padding: 28px; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); transition: all 0.5s; cursor: default; position: relative; overflow: hidden; }
 .card-glow { position: absolute; inset: 0; background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), var(--accent-glow) 0%, transparent 50%); opacity: 0; transition: opacity 0.4s; pointer-events: none; }
 .work-card:hover .card-glow { opacity: 1; }
 .work-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--accent); transform: scaleX(0); transition: transform 0.5s; }
