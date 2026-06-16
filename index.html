@@ -1,474 +1,199 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YZT</title>
-  <meta name="description" content="YZT — 研究者。操作者。观察思考与崩溃的系统。">
-  <meta name="theme-color" content="#fafafa">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◈</text></svg>">
-  <link rel="stylesheet" href="style.css">
+  <title>YZT — 研究者·操作者·观察者</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Loading screen -->
-  <div class="loader" id="loader">
-    <div class="loader-inner">
-      <div class="loader-logo" data-glitch="YZT">YZT</div>
-      <div class="loader-bar">
-        <div class="loader-fill" id="loaderFill"></div>
-      </div>
-      <div class="loader-text" data-i18n="loading">初始化系统...</div>
-    </div>
-  </div>
 
-  <!-- Cursor -->
-  <div class="cursor-dot" id="cursorDot"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
-  <div class="cursor-glow" id="cursorGlow"></div>
-  <canvas class="cursor-trail" id="cursorTrail"></canvas>
-
-  <!-- Noise -->
+  <!-- Noise overlay -->
   <div class="noise"></div>
 
-  <!-- White background textures -->
-  <div class="white-texture"></div>
-  <div class="white-dots"></div>
-
-  <!-- Page navigation bar -->
-  <div class="page-sidebar" id="pageSidebar">
-    <a href="#/" class="page-sidebar-item" data-page="hero">
-      <span class="page-sidebar-dot"></span>
-      <span class="page-sidebar-label">HOME</span>
-    </a>
-    <a href="#/about" class="page-sidebar-item" data-page="about">
-      <span class="page-sidebar-dot"></span>
-      <span class="page-sidebar-label">ABOUT</span>
-    </a>
-    <a href="#/skills" class="page-sidebar-item" data-page="skills">
-      <span class="page-sidebar-dot"></span>
-      <span class="page-sidebar-label">SKILLS</span>
-    </a>
-    <a href="#/work" class="page-sidebar-item" data-page="work">
-      <span class="page-sidebar-dot"></span>
-      <span class="page-sidebar-label">WORK</span>
-    </a>
-    <a href="#/thinking" class="page-sidebar-item" data-page="thinking">
-      <span class="page-sidebar-dot"></span>
-      <span class="page-sidebar-label">THINK</span>
-    </a>
-    <a href="#/terminal" class="page-sidebar-item" data-page="interactive">
-      <span class="page-sidebar-dot"></span>
-      <span class="page-sidebar-label">SHELL</span>
-    </a>
-    <a href="#/contact" class="page-sidebar-item" data-page="contact">
-      <span class="page-sidebar-dot"></span>
-      <span class="page-sidebar-label">CONTACT</span>
-    </a>
-  </div>
-
-  <!-- Scroll progress -->
-  <div class="scroll-progress" id="scrollProgress"></div>
-
-  <!-- Nav -->
-  <nav class="nav" id="nav">
-    <div class="nav-inner">
-      <a href="#/" class="nav-logo" data-glitch="YZT">YZT</a>
-      <div class="nav-links">
-        <a href="#/about" class="nav-link" data-text="About" data-i18n="nav-about">关于</a>
-        <a href="#/skills" class="nav-link" data-text="Skills" data-i18n="nav-skills">技能</a>
-        <a href="#/work" class="nav-link" data-text="Work" data-i18n="nav-work">作品</a>
-        <a href="#/thinking" class="nav-link" data-text="Thinking" data-i18n="nav-thinking">思考</a>
-        <a href="pentest-roadmap.html" class="nav-link" data-text="Pentest" data-i18n="nav-pentest">渗透</a>
-        <a href="#/contact" class="nav-link" data-text="Contact" data-i18n="nav-contact">联系</a>
-      </div>
-      <div class="nav-right">
-        <button class="lang-toggle" id="langToggle" aria-label="Toggle language">
-          <span class="lang-text">EN</span>
-        </button>
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-          <svg class="theme-icon sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-          </svg>
-          <svg class="theme-icon moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        </button>
-        <div class="nav-status">
-          <span class="status-dot"></span>
-          <span class="status-text">ONLINE</span>
-        </div>
-        <button class="nav-menu" id="navMenu" aria-label="Menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </div>
+  <!-- ===== NAV ===== -->
+  <nav class="nav">
+    <a href="#" class="nav-link">HOME</a>
+    <a href="#about" class="nav-link">ABOUT</a>
+    <a href="#skills" class="nav-link">SKILLS</a>
+    <a href="#work" class="nav-link">WORK</a>
+    <a href="pentest-roadmap.html" class="nav-link">PENTEST</a>
+    <a href="#contact" class="nav-link">CONTACT</a>
   </nav>
 
-  <!-- Mobile menu -->
-  <div class="mobile-menu" id="mobileMenu">
-    <div class="mobile-menu-inner">
-      <a href="#/about" class="mobile-link" data-i18n="nav-about">关于</a>
-      <a href="#/skills" class="mobile-link" data-i18n="nav-skills">技能</a>
-      <a href="#/work" class="mobile-link" data-i18n="nav-work">作品</a>
-      <a href="#/thinking" class="mobile-link" data-i18n="nav-thinking">思考</a>
-      <a href="pentest-roadmap.html" class="mobile-link" data-i18n="nav-pentest">渗透</a>
-      <a href="#/contact" class="mobile-link" data-i18n="nav-contact">联系</a>
-    </div>
-  </div>
+  <div class="sep"></div>
 
-  <!-- ==================== HERO ==================== -->
-  <section class="panel" id="hero" data-bg="neural">
-    <div class="panel-content">
-      <canvas class="dot-matrix"></canvas>
-      <div class="hero-label">
-        <span class="label-line"></span>
-        <span class="label-text" id="heroLabel"></span>
-      </div>
-      <h1 class="hero-title">
-        <span class="title-line">
-          <span class="title-word" data-delay="0" data-i18n="hero-explore">探索</span>
-        </span>
-        <span class="title-line">
-          <span class="title-word" data-delay="1" data-i18n="hero-the">系统之间的</span>
-          <span class="title-word accent" data-delay="2" data-i18n="hero-void">虚空</span>
-        </span>
-        <span class="title-line">
-          <span class="title-word" data-delay="3" data-i18n="hero-between">与</span>
-          <span class="title-word accent" data-delay="4" data-i18n="hero-systems">秩序</span>
-        </span>
-      </h1>
-      <p class="hero-desc" id="heroDesc"></p>
-      <div class="hero-cta">
-        <a href="pentest-roadmap.html" class="btn btn-primary" data-i18n="hero-explore-btn">探索作品</a>
-        <a href="mailto:yzt0000@outlook.com" class="btn btn-outline" data-i18n="hero-contact-btn">联系我</a>
-      </div>
-      <div class="hero-meta">
+  <!-- ===== HERO ===== -->
+  <section class="section" id="hero">
+    <div class="section-left">
+      <h2 class="section-title">YZT</h2>
+      <p class="section-subtitle" id="heroLabel">研究者 · 操作者 · 观察者</p>
+      <p class="section-body">
+        一个观察者，站在<span class="hl">人工智能</span>、<span class="hl">网络安全</span>和连接它们的涌现模式的交汇处。
+        在系统崩溃、进化和重组的空间中运作。每一个漏洞都是一扇门。每一个模型都是一面镜子。
+      </p>
+      <div class="meta-row">
         <div class="meta-item">
-          <span class="meta-label" data-i18n="meta-location">位置</span>
+          <span class="meta-label">位置</span>
           <span class="meta-value" id="visitorIP">获取中...</span>
         </div>
         <div class="meta-item">
-          <span class="meta-label" data-i18n="meta-status">状态</span>
-          <span class="meta-value"><span class="blink-dot"></span> <span data-i18n="meta-active">活跃</span></span>
+          <span class="meta-label">状态</span>
+          <span class="meta-value"><span class="dot-live"></span> 活跃</span>
         </div>
         <div class="meta-item">
-          <span class="meta-label" data-i18n="meta-clearance">权限等级</span>
-          <span class="meta-value">未知</span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label" data-i18n="meta-uptime">运行时间</span>
+          <span class="meta-label">运行时间</span>
           <span class="meta-value" id="uptime">00:00:00</span>
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- ==================== ABOUT ==================== -->
-  <section class="panel" id="about" data-bg="waves">
-    <div class="panel-content">
-      <canvas class="dot-matrix"></canvas>
-      <div class="section-header">
-        <span class="section-number">01</span>
-        <span class="section-title" data-i18n="section-about">关于</span>
-        <span class="section-line"></span>
-        <span class="meta-tag">OUTPUT 96</span>
-      </div>
-      <div class="about-grid">
-        <div class="about-text">
-          <p class="about-intro" data-i18n="about-intro">
-            一个观察者，站在<span class="highlight" data-tip="大语言模型、智能体、强化学习">人工智能</span>、<span class="highlight" data-tip="渗透测试、逆向工程、开源情报">网络安全</span>和连接它们的涌现模式的交汇处。
-          </p>
-          <p class="about-body" data-i18n="about-body">
-            在系统崩溃、进化和重组的空间中运作。每一个漏洞都是一扇门。每一个模型都是一面镜子。有趣的问题存在于边界之处。
-          </p>
-          <div class="about-stats">
-            <div class="stat-card">
-              <span class="stat-number" data-target="3">0</span>
-              <span class="stat-label" data-i18n="stat-focus">专注领域</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number" data-target="∞">0</span>
-              <span class="stat-label" data-i18n="stat-questions">探索问题</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number" data-target="0">0</span>
-              <span class="stat-label" data-i18n="stat-boundaries">边界限制</span>
-            </div>
-          </div>
-        </div>
-        <div class="about-terminal">
-          <div class="terminal-header">
-            <div class="terminal-dots">
-              <span></span><span></span><span></span>
-            </div>
-            <span class="terminal-title">identity.sh</span>
-            <div class="terminal-actions">
-              <button class="term-btn" id="termRun" title="Run again">↻</button>
-            </div>
-          </div>
-          <div class="terminal-body" id="terminalBody">
-            <div class="terminal-line">
-              <span class="prompt">$</span>
-              <span class="cmd" id="terminalCmd"></span>
-              <span class="cursor">█</span>
-            </div>
-          </div>
-        </div>
+    <div class="section-right">
+      <span class="output-label">OUTPUT 01</span>
+      <span class="seed">SEED: <span id="seed1">3573860127</span></span>
+      <div class="icon-art">
+        <svg viewBox="0 0 100 100" width="80" height="80" fill="none" stroke="currentColor" stroke-width="0.8">
+          <circle cx="50" cy="50" r="40"/><ellipse cx="50" cy="50" rx="40" ry="15"/>
+          <ellipse cx="50" cy="50" rx="15" ry="40" transform="rotate(60 50 50)"/>
+          <ellipse cx="50" cy="50" rx="15" ry="40" transform="rotate(-60 50 50)"/>
+        </svg>
       </div>
     </div>
   </section>
 
-  <!-- ==================== SKILLS ==================== -->
-  <section class="panel" id="skills" data-bg="grid">
-    <div class="panel-content">
-      <canvas class="dot-matrix"></canvas>
-      <div class="section-header">
-        <span class="section-number">02</span>
-        <span class="section-title" data-i18n="section-skills">技能</span>
-        <span class="section-line"></span>
-        <span class="meta-tag">OUTPUT 288</span>
+  <div class="sep"></div>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="section" id="about">
+    <div class="section-left">
+      <h2 class="section-title">关于</h2>
+      <p class="section-body">
+        专注于<span class="hl">模型架构</span>、<span class="hl">数据合成</span>、<span class="hl">强化学习</span>。
+        在系统崩溃与重组的空间中运作。每一个漏洞都是一扇门，每一个模型都是一面镜子。
+        有趣的问题存在于边界之处。
+      </p>
+      <div class="stats-row">
+        <div class="stat"><span class="stat-num">3</span><span class="stat-label">专注领域</span></div>
+        <div class="stat"><span class="stat-num">∞</span><span class="stat-label">探索问题</span></div>
+        <div class="stat"><span class="stat-num">0</span><span class="stat-label">边界限制</span></div>
       </div>
-      <div class="skills-grid">
-        <div class="skill-card" data-level="90">
-          <div class="skill-header">
-            <span class="skill-name" data-i18n="skill-ai">AI / 机器学习系统</span>
-            <span class="skill-pct">90%</span>
-          </div>
-          <div class="skill-bar"><div class="skill-fill" style="--target-width: 90%"></div></div>
-          <div class="skill-detail" data-i18n="skill-ai-detail">大模型微调 · 智能体架构 · 强化学习</div>
-        </div>
-        <div class="skill-card" data-level="75">
-          <div class="skill-header">
-            <span class="skill-name" data-i18n="skill-security">网络安全</span>
-            <span class="skill-pct">75%</span>
-          </div>
-          <div class="skill-bar"><div class="skill-fill" style="--target-width: 75%"></div></div>
-          <div class="skill-detail" data-i18n="skill-security-detail">渗透测试 · Web安全 · 开源情报</div>
-        </div>
-        <div class="skill-card" data-level="85">
-          <div class="skill-header">
-            <span class="skill-name" data-i18n="skill-dev">软件开发</span>
-            <span class="skill-pct">85%</span>
-          </div>
-          <div class="skill-bar"><div class="skill-fill" style="--target-width: 85%"></div></div>
-          <div class="skill-detail" data-i18n="skill-dev-detail">Python · Rust · TypeScript · Go</div>
-        </div>
-        <div class="skill-card" data-level="70">
-          <div class="skill-header">
-            <span class="skill-name" data-i18n="skill-infra">基础设施</span>
-            <span class="skill-pct">70%</span>
-          </div>
-          <div class="skill-bar"><div class="skill-fill" style="--target-width: 70%"></div></div>
-          <div class="skill-detail" data-i18n="skill-infra-detail">Docker · Linux · 网络 · 云计算</div>
-        </div>
+    </div>
+    <div class="section-right">
+      <span class="output-label">OUTPUT 02</span>
+      <span class="seed">SEED: <span id="seed2">2226809351</span></span>
+      <div class="icon-art">
+        <svg viewBox="0 0 100 100" width="80" height="80" fill="none" stroke="currentColor" stroke-width="0.8">
+          <rect x="10" y="10" width="80" height="80" rx="2"/><line x1="10" y1="35" x2="90" y2="35"/>
+          <line x1="10" y1="60" x2="90" y2="60"/><line x1="35" y1="10" x2="35" y2="90"/>
+          <line x1="65" y1="10" x2="65" y2="90"/>
+        </svg>
       </div>
     </div>
   </section>
 
-  <!-- ==================== WORK ==================== -->
-  <section class="panel" id="work" data-bg="particles">
-    <div class="panel-content">
-      <canvas class="dot-matrix"></canvas>
-      <div class="section-header">
-        <span class="section-number">03</span>
-        <span class="section-title" data-i18n="section-work">作品</span>
-        <span class="section-line"></span>
-        <span class="meta-tag">OUTPUT 317</span>
+  <div class="sep"></div>
+
+  <!-- ===== SKILLS ===== -->
+  <section class="section" id="skills">
+    <div class="section-left">
+      <h2 class="section-title">技能</h2>
+      <div class="skill-list">
+        <div class="skill-item">
+          <span class="skill-name">人工智能 / LLM</span>
+          <span class="skill-bar"><span style="width:85%"></span></span>
+          <span class="skill-pct">85%</span>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">网络安全 / 渗透</span>
+          <span class="skill-bar"><span style="width:45%"></span></span>
+          <span class="skill-pct">45%</span>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">系统开发 / 工程</span>
+          <span class="skill-bar"><span style="width:70%"></span></span>
+          <span class="skill-pct">70%</span>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">数据科学 / 分析</span>
+          <span class="skill-bar"><span style="width:60%"></span></span>
+          <span class="skill-pct">60%</span>
+        </div>
       </div>
-      <div class="work-grid">
-        <div class="work-card" data-tilt>
-          <div class="card-glow"></div>
-          <div class="card-icon">◈</div>
-          <h3 class="card-title" data-i18n="work-ai">AI 系统</h3>
-          <p class="card-desc" data-i18n="work-ai-desc">构建和破坏智能系统。从微调到红队测试。机器正在觉醒。</p>
-          <div class="card-tags">
-            <span>LLM</span><span>Agents</span><span>RL</span>
-          </div>
-          <div class="card-footer">
-            <span class="card-status" data-i18n="work-active">● 进行中</span>
-            <span class="card-arrow">→</span>
-          </div>
-        </div>
-        <div class="work-card" data-tilt>
-          <div class="card-glow"></div>
-          <div class="card-icon">⬡</div>
-          <h3 class="card-title" data-i18n="work-security">安全研究</h3>
-          <p class="card-desc" data-i18n="work-security-desc">绘制攻击面。理解失败模式。每一把锁都有钥匙，每一个系统都有故事。</p>
-          <div class="card-tags">
-            <span>Pentest</span><span>RE</span><span>OSINT</span>
-          </div>
-          <div class="card-footer">
-            <span class="card-status" data-i18n="work-exploring">● 探索中</span>
-            <span class="card-arrow">→</span>
-          </div>
-        </div>
-        <div class="work-card" data-tilt>
-          <div class="card-glow"></div>
-          <div class="card-icon">△</div>
-          <h3 class="card-title" data-i18n="work-research">学术研究</h3>
-          <p class="card-desc" data-i18n="work-research-desc">探索机器理解和创造的边界。未知就是目的地。</p>
-          <div class="card-tags">
-            <span>Papers</span><span>Experiments</span><span>Writing</span>
-          </div>
-          <div class="card-footer">
-            <span class="card-status" data-i18n="work-ongoing">● 持续进行</span>
-            <span class="card-arrow">→</span>
-          </div>
-        </div>
+    </div>
+    <div class="section-right">
+      <span class="output-label">OUTPUT 03</span>
+      <span class="seed">SEED: <span id="seed3">3396188657</span></span>
+      <div class="icon-art">
+        <svg viewBox="0 0 100 100" width="80" height="80" fill="none" stroke="currentColor" stroke-width="0.8">
+          <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5"/>
+          <polygon points="50,20 80,35 80,65 50,80 20,65 20,35"/>
+        </svg>
       </div>
     </div>
   </section>
 
-  <!-- ==================== THINKING ==================== -->
-  <section class="panel" id="thinking" data-bg="fractal">
-    <div class="panel-content">
-      <canvas class="dot-matrix"></canvas>
-      <div class="section-header">
-        <span class="section-number">04</span>
-        <span class="section-title" data-i18n="section-thinking">思考</span>
-        <span class="section-line"></span>
+  <div class="sep"></div>
+
+  <!-- ===== WORK ===== -->
+  <section class="section" id="work">
+    <div class="section-left">
+      <h2 class="section-title">作品</h2>
+      <div class="work-list">
+        <a class="work-item" href="pentest-roadmap.html">
+          <span class="work-name">渗透测试路线图</span>
+          <span class="work-desc">从零开始的渗透测试学习路径</span>
+          <span class="work-tag">进行中</span>
+        </a>
+        <a class="work-item" href="#">
+          <span class="work-name">个人主页 v3</span>
+          <span class="work-desc">Nous Research 风格终端美学</span>
+          <span class="work-tag">活跃</span>
+        </a>
+        <a class="work-item" href="#">
+          <span class="work-name">AI Agent 工作流</span>
+          <span class="work-desc">Hermes Agent 自动化部署与运维</span>
+          <span class="work-tag">活跃</span>
+        </a>
       </div>
-      <div class="thinking-list">
-        <div class="thinking-item" data-index="0">
-          <span class="thinking-date">2026.06</span>
-          <span class="thinking-title" data-i18n="think-1">论对齐的脆弱性</span>
-          <span class="thinking-tag" data-i18n="think-1-tag">AI安全</span>
-          <span class="thinking-arrow">→</span>
-        </div>
-        <div class="thinking-item" data-index="1">
-          <span class="thinking-date">2026.05</span>
-          <span class="thinking-title" data-i18n="think-2">多智能体系统中的对抗模式</span>
-          <span class="thinking-tag" data-i18n="think-2-tag">研究</span>
-          <span class="thinking-arrow">→</span>
-        </div>
-        <div class="thinking-item" data-index="2">
-          <span class="thinking-date">2026.04</span>
-          <span class="thinking-title" data-i18n="think-3">CTF教会我们关于真实系统的什么</span>
-          <span class="thinking-tag" data-i18n="think-3-tag">安全</span>
-          <span class="thinking-arrow">→</span>
-        </div>
-        <div class="thinking-item" data-index="3">
-          <span class="thinking-date">2026.03</span>
-          <span class="thinking-title" data-i18n="think-4">提示词的不合理有效性</span>
-          <span class="thinking-tag" data-i18n="think-4-tag">大模型</span>
-          <span class="thinking-arrow">→</span>
-        </div>
+    </div>
+    <div class="section-right">
+      <span class="output-label">OUTPUT 04</span>
+      <span class="seed">SEED: <span id="seed4">7821045963</span></span>
+      <div class="icon-art">
+        <svg viewBox="0 0 100 100" width="80" height="80" fill="none" stroke="currentColor" stroke-width="0.8">
+          <circle cx="50" cy="50" r="20"/><circle cx="50" cy="50" r="40"/>
+          <line x1="50" y1="10" x2="50" y2="90"/><line x1="10" y1="50" x2="90" y2="50"/>
+        </svg>
       </div>
     </div>
   </section>
 
-  <!-- ==================== TERMINAL ==================== -->
-  <section class="panel" id="interactive" data-bg="matrix">
-    <div class="panel-content">
-      <canvas class="dot-matrix"></canvas>
-      <div class="section-header">
-        <span class="section-number">05</span>
-        <span class="section-title" data-i18n="section-terminal">终端</span>
-        <span class="section-line"></span>
+  <div class="sep"></div>
+
+  <!-- ===== CONTACT ===== -->
+  <section class="section" id="contact">
+    <div class="section-left">
+      <h2 class="section-title">联系</h2>
+      <p class="section-body">
+        如果你对人工智能、网络安全或任何有趣的问题感兴趣，欢迎联系。
+      </p>
+      <div class="contact-links">
+        <a href="mailto:yzt0000@outlook.com" class="contact-link">→ EMAIL</a>
+        <a href="https://github.com/314xxx" class="contact-link" target="_blank">→ GITHUB</a>
       </div>
-      <div class="interactive-terminal">
-        <div class="terminal-header">
-          <div class="terminal-dots">
-            <span></span><span></span><span></span>
-          </div>
-          <span class="terminal-title">visitor@yzt — bash</span>
-        </div>
-        <div class="interactive-body" id="interactiveBody">
-          <div class="interactive-welcome">
-            <pre class="ascii-art">
- ██╗   ██╗███████╗████████╗
- ╚██╗ ██╔╝╚══██╔══╝╚══██╔══╝
-  ╚████╔╝    ██║      ██║
-   ╚██╔╝     ██║      ██║
-    ██║      ██║      ██║
-    ╚═╝      ╚═╝      ╚═╝
-            </pre>
-            <p class="interactive-hint" data-i18n="terminal-hint">输入 <span class="cmd-hint">help</span> 查看可用命令</p>
-          </div>
-          <div class="interactive-input-line">
-            <span class="prompt visitor">visitor@yzt</span><span class="prompt-sep">:</span><span class="prompt-path">~</span><span class="prompt-end">$</span>
-            <input type="text" class="interactive-input" id="interactiveInput" autocomplete="off" spellcheck="false">
-            <span class="input-cursor">█</span>
-          </div>
-        </div>
-      </div>
+    </div>
+    <div class="section-right">
+      <span class="output-label">OUTPUT 05</span>
+      <span class="seed">SEED: <span id="seed5">4491027385</span></span>
     </div>
   </section>
 
-  <!-- ==================== CONTACT ==================== -->
-  <section class="panel" id="contact" data-bg="dots">
-    <div class="panel-content">
-      <canvas class="dot-matrix"></canvas>
-      <div class="section-header">
-        <span class="section-number">06</span>
-        <span class="section-title" data-i18n="section-contact">联系</span>
-        <span class="section-line"></span>
-      </div>
-      <div class="contact-content">
-        <p class="contact-text" data-i18n="contact-text">
-          使用以下渠道进行加密传输。
-        </p>
-        <div class="contact-links">
-          <a href="https://github.com/314xxx" class="contact-link" target="_blank" rel="noopener">
-            <span class="link-icon">⬡</span>
-            <span class="link-info">
-              <span class="link-label">GITHUB</span>
-              <span class="link-value">github.com/314xxx</span>
-            </span>
-            <span class="link-arrow">→</span>
-          </a>
-          <a href="mailto:yzt0000@outlook.com" class="contact-link">
-            <span class="link-icon">◈</span>
-            <span class="link-info">
-              <span class="link-label">EMAIL</span>
-              <span class="link-value">yzt0000@outlook.com</span>
-            </span>
-            <span class="link-arrow">→</span>
-          </a>
-          <a href="https://yzt.qzz.io" class="contact-link" target="_blank" rel="noopener">
-            <span class="link-icon">△</span>
-            <span class="link-info">
-              <span class="link-label">WEBSITE</span>
-              <span class="link-value">yzt.qzz.io</span>
-            </span>
-            <span class="link-arrow">→</span>
-          </a>
-        </div>
-        <div class="contact-quote">
-          <blockquote data-i18n="contact-quote">
-            "发现可能的极限的唯一方法，<br>就是超越它们，进入不可能。"
-          </blockquote>
-          <cite>— 亚瑟·克拉克</cite>
-        </div>
-      </div>
-    </div>
-  </section>
+  <div class="sep"></div>
 
-  <!-- Easter egg notification -->
-  <div class="ee-toast" id="eeToast">
-    <span class="ee-toast-icon">🎮</span>
-    <span class="ee-toast-text" id="eeToastText"></span>
-  </div>
-
-  <!-- Konami overlay -->
-  <div class="konami-overlay" id="konamiOverlay">
-    <canvas id="matrixCanvas"></canvas>
-    <div class="konami-text">
-      <h2 data-i18n="konami-title">🎮 秘技已激活</h2>
-      <p data-i18n="konami-desc">你找到了秘密。矩阵掌控了你。</p>
-      <button class="btn btn-primary" onclick="document.getElementById('konamiOverlay').classList.remove('active')" data-i18n="konami-exit">退出</button>
-    </div>
-  </div>
-
-  <!-- Footer -->
   <footer class="footer">
-    <div class="footer-inner">
-      <span class="footer-text">© 2026 YZT</span>
-      <span class="footer-text" data-i18n="footer-built">精心打造</span>
-      <span class="footer-text" id="buildTime"></span>
-    </div>
+    <span>© 2026 YZT</span>
+    <span>研究者 · 操作者 · 观察者</span>
   </footer>
 
   <script src="script.js"></script>
