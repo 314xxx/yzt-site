@@ -1,7 +1,114 @@
 /* ============================================
-   YZT — Interactive Engine v3
-   Theme · Cursor Trail · Particles · Konami
+   YZT — Interactive Engine v4
+   Theme · Language · Cursor Trail · Particles
    ============================================ */
+
+// ===== TRANSLATIONS =====
+const translations = {
+  zh: {
+    'loading': '初始化系统...',
+    'nav-about': '关于', 'nav-skills': '技能', 'nav-work': '作品',
+    'nav-thinking': '思考', 'nav-pentest': '渗透', 'nav-contact': '联系',
+    'hero-label': '系统操作员 // 机密',
+    'hero-desc': '研究者。操作者。观察思考与崩溃的系统。',
+    'hero-explore': '探索', 'hero-the': '系统之间的', 'hero-void': '虚空',
+    'hero-between': '与', 'hero-systems': '秩序',
+    'hero-explore-btn': '探索作品', 'hero-contact-btn': '联系我',
+    'meta-location': '位置', 'meta-status': '状态', 'meta-active': '活跃',
+    'meta-clearance': '权限等级', 'meta-uptime': '运行时间', 'scroll': '滚动',
+    'section-about': '关于', 'section-skills': '技能', 'section-work': '作品',
+    'section-thinking': '思考', 'section-terminal': '终端', 'section-contact': '联系',
+    'about-intro': '一个观察者，站在<span class="highlight" data-tip="大语言模型、智能体、强化学习">人工智能</span>、<span class="highlight" data-tip="渗透测试、逆向工程、开源情报">网络安全</span>和连接它们的涌现模式的交汇处。',
+    'about-body': '在系统崩溃、进化和重组的空间中运作。每一个漏洞都是一扇门。每一个模型都是一面镜子。有趣的问题存在于边界之处。',
+    'stat-focus': '专注领域', 'stat-questions': '探索问题', 'stat-boundaries': '边界限制',
+    'skill-ai': 'AI / 机器学习系统', 'skill-ai-detail': '大模型微调 · 智能体架构 · 强化学习',
+    'skill-security': '网络安全', 'skill-security-detail': '渗透测试 · Web安全 · 开源情报',
+    'skill-dev': '软件开发', 'skill-dev-detail': 'Python · Rust · TypeScript · Go',
+    'skill-infra': '基础设施', 'skill-infra-detail': 'Docker · Linux · 网络 · 云计算',
+    'work-ai': 'AI 系统', 'work-ai-desc': '构建和破坏智能系统。从微调到红队测试。机器正在觉醒。',
+    'work-security': '安全研究', 'work-security-desc': '绘制攻击面。理解失败模式。每一把锁都有钥匙，每一个系统都有故事。',
+    'work-research': '学术研究', 'work-research-desc': '探索机器理解和创造的边界。未知就是目的地。',
+    'work-active': '● 进行中', 'work-exploring': '● 探索中', 'work-ongoing': '● 持续进行',
+    'think-1': '论对齐的脆弱性', 'think-1-tag': 'AI安全',
+    'think-2': '多智能体系统中的对抗模式', 'think-2-tag': '研究',
+    'think-3': 'CTF教会我们关于真实系统的什么', 'think-3-tag': '安全',
+    'think-4': '提示词的不合理有效性', 'think-4-tag': '大模型',
+    'terminal-hint': '输入 <span class="cmd-hint">help</span> 查看可用命令',
+    'contact-text': '使用以下渠道进行加密传输。',
+    'contact-quote': '"发现可能的极限的唯一方法，<br>就是超越它们，进入不可能。"',
+    'konami-title': '🎮 秘技已激活', 'konami-desc': '你找到了秘密。矩阵掌控了你。',
+    'konami-exit': '退出', 'footer-built': '精心打造',
+  },
+  en: {
+    'loading': 'INITIALIZING SYSTEM...',
+    'nav-about': 'About', 'nav-skills': 'Skills', 'nav-work': 'Work',
+    'nav-thinking': 'Thinking', 'nav-pentest': 'Pentest', 'nav-contact': 'Contact',
+    'hero-label': 'SYSTEM OPERATOR // CLASSIFIED',
+    'hero-desc': 'Researcher. Operator. Observer of systems that think and systems that break.',
+    'hero-explore': 'Exploring', 'hero-the': 'the', 'hero-void': 'void',
+    'hero-between': 'between', 'hero-systems': 'systems',
+    'hero-explore-btn': 'Explore Work', 'hero-contact-btn': 'Get in Touch',
+    'meta-location': 'LOCATION', 'meta-status': 'STATUS', 'meta-active': 'ACTIVE',
+    'meta-clearance': 'CLEARANCE', 'meta-uptime': 'UPTIME', 'scroll': 'SCROLL',
+    'section-about': 'About', 'section-skills': 'Skills', 'section-work': 'Work',
+    'section-thinking': 'Thinking', 'section-terminal': 'Terminal', 'section-contact': 'Contact',
+    'about-intro': 'An observer at the intersection of <span class="highlight" data-tip="Large Language Models, Agents, Reinforcement Learning">artificial intelligence</span>, <span class="highlight" data-tip="Penetration Testing, Reverse Engineering, OSINT">cybersecurity</span>, and the emergent patterns that connect them.',
+    'about-body': 'Operating in the spaces where systems break, evolve, and recombine. Every vulnerability is a door. Every model is a mirror. The interesting questions live at the edges.',
+    'stat-focus': 'Focus Areas', 'stat-questions': 'Questions', 'stat-boundaries': 'Boundaries',
+    'skill-ai': 'AI / ML Systems', 'skill-ai-detail': 'LLM Fine-tuning · Agent Architecture · RL',
+    'skill-security': 'Cybersecurity', 'skill-security-detail': 'Pentesting · Web Security · OSINT',
+    'skill-dev': 'Development', 'skill-dev-detail': 'Python · Rust · TypeScript · Go',
+    'skill-infra': 'Infrastructure', 'skill-infra-detail': 'Docker · Linux · Networking · Cloud',
+    'work-ai': 'AI Systems', 'work-ai-desc': 'Building and breaking intelligent systems. From fine-tuning to red-teaming. The machines are waking up.',
+    'work-security': 'Security', 'work-security-desc': 'Mapping attack surfaces. Understanding failure modes. Every lock has a key, every system has a story.',
+    'work-research': 'Research', 'work-research-desc': 'Probing the boundaries of what machines can understand and create. The unknown is the destination.',
+    'work-active': '● Active', 'work-exploring': '● Exploring', 'work-ongoing': '● Ongoing',
+    'think-1': 'On the fragility of alignment', 'think-1-tag': 'AI Safety',
+    'think-2': 'Adversarial patterns in multi-agent systems', 'think-2-tag': 'Research',
+    'think-3': 'What CTFs teach us about real systems', 'think-3-tag': 'Security',
+    'think-4': 'The unreasonable effectiveness of prompting', 'think-4-tag': 'LLM',
+    'terminal-hint': 'Type <span class="cmd-hint">help</span> to see available commands',
+    'contact-text': 'For encrypted transmissions, use the channels below.',
+    'contact-quote': '"The only way to discover the limits of the possible<br>is to go beyond them into the impossible."',
+    'konami-title': '🎮 KONAMI CODE ACTIVATED', 'konami-desc': 'You found the secret. The matrix has you.',
+    'konami-exit': 'EXIT', 'footer-built': 'BUILT WITH PURPOSE',
+  }
+};
+
+// ===== LANGUAGE TOGGLE =====
+let currentLang = localStorage.getItem('lang') || 'zh';
+const langToggle = document.getElementById('langToggle');
+const langText = langToggle.querySelector('.lang-text');
+
+function updateLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+  langText.textContent = lang === 'zh' ? 'EN' : '中';
+  
+  // Update all elements with data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (translations[lang][key]) {
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        el.placeholder = translations[lang][key];
+      } else {
+        el.innerHTML = translations[lang][key];
+      }
+    }
+  });
+  
+  // Update page title
+  document.title = lang === 'zh' ? 'YZT — 研究者·操作者·观察者' : 'YZT — Researcher·Operator·Observer';
+}
+
+langToggle.addEventListener('click', () => {
+  const newLang = currentLang === 'zh' ? 'en' : 'zh';
+  updateLanguage(newLang);
+  showToast(newLang === 'zh' ? '🇨🇳 已切换到中文' : '🇬🇧 Switched to English');
+});
+
+// Initialize language
+updateLanguage(currentLang);
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -16,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const next = current === 'light' ? 'dark' : 'light';
     html.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
-    showToast(next === 'dark' ? '🌙 Dark mode activated' : '☀️ Light mode activated');
+    showToast(next === 'dark' ? '🌙 暗色模式' : '☀️ 亮色模式');
   });
 
   // ===== LOADER =====
@@ -228,7 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollProgress.style.width = total > 0 ? (window.scrollY / total * 100) + '%' : '0%';
   });
 
-  // Navigation for anchor links (no smooth scroll)
   document.querySelectorAll('a[href^="#"]').forEach(link => {
     link.addEventListener('click', e => {
       // Let default behavior handle it (jump to anchor)
@@ -257,8 +363,13 @@ document.addEventListener('DOMContentLoaded', () => {
       tick();
     }, delay);
   }
-  typeText(document.getElementById('heroLabel'), 'SYSTEM OPERATOR // CLASSIFIED', 50, 1200);
-  typeText(document.getElementById('heroDesc'), 'Researcher. Operator. Observer of systems that think and systems that break.', 25, 2200);
+
+  // Use language-specific text for typewriters
+  const heroLabelKey = currentLang === 'zh' ? '系统操作员 // 机密' : 'SYSTEM OPERATOR // CLASSIFIED';
+  const heroDescKey = currentLang === 'zh' ? '研究者。操作者。观察思考与崩溃的系统。' : 'Researcher. Operator. Observer of systems that think and systems that break.';
+  
+  typeText(document.getElementById('heroLabel'), heroLabelKey, 50, 1200);
+  typeText(document.getElementById('heroDesc'), heroDescKey, 25, 2200);
 
   // ===== SCRAMBLE TEXT =====
   const scrambleChars = '█▓▒░@#$%&*!?';
@@ -286,13 +397,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const termSequence = [
     { type: 'cmd', text: 'cat /etc/identity' },
-    { type: 'output', lines: ['name:    [REDACTED]', 'alias:   yzt', 'role:    researcher / operator', 'status:  active'] },
+    { type: 'output', lines: currentLang === 'zh' ? 
+      ['名字:    [已隐藏]', '别名:   yzt', '角色:    研究员 / 操作员', '状态:  活跃'] :
+      ['name:    [REDACTED]', 'alias:   yzt', 'role:    researcher / operator', 'status:  active'] },
     { type: 'cmd', text: 'echo $CURRENT_FOCUS' },
-    { type: 'output', lines: ['AI systems · Cybersecurity · Emergent behavior'] },
+    { type: 'output', lines: currentLang === 'zh' ?
+      ['AI系统 · 网络安全 · 涌现行为'] :
+      ['AI systems · Cybersecurity · Emergent behavior'] },
     { type: 'cmd', text: 'uname -a' },
     { type: 'output', lines: ['void 6.6.0-yzt #1 SMP PREEMPT_DYNAMIC x86_64'] },
     { type: 'cmd', text: 'cat motto.txt' },
-    { type: 'output', lines: ['"Every system has a story.', '  Find it."'] },
+    { type: 'output', lines: currentLang === 'zh' ?
+      ['"每一个系统都有一个故事。', '  去发现它。"'] :
+      ['"Every system has a story.', '  Find it."'] },
   ];
 
   let seqIdx = 0;
@@ -429,7 +546,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const iInput = document.getElementById('interactiveInput');
 
   const commands = {
-    help: () => [
+    help: () => currentLang === 'zh' ? [
+      '可用命令:', '',
+      '  help      — 显示此消息',
+      '  whoami    — 身份信息',
+      '  about     — 关于我',
+      '  skills    — 技能树',
+      '  focus     — 当前专注领域',
+      '  projects  — 项目展示',
+      '  secret    — ???',
+      '  theme     — 切换暗色/亮色模式',
+      '  lang      — 切换中英文',
+      '  clear     — 清除终端',
+      '  date      — 当前时间戳',
+      '  quote     — 随机名言',
+      '  matrix    — 进入矩阵',
+      '  hack      — 模拟黑客攻击',
+      '  neofetch  — 系统信息',
+      '  fortune   — 幸运饼干',
+      '', '输入任何内容来探索。',
+    ] : [
       'Available commands:', '',
       '  help      — Show this message',
       '  whoami    — Identity info',
@@ -439,6 +575,7 @@ document.addEventListener('DOMContentLoaded', () => {
       '  projects  — Notable projects',
       '  secret    — ???',
       '  theme     — Toggle dark/light mode',
+      '  lang      — Switch Chinese/English',
       '  clear     — Clear terminal',
       '  date      — Current timestamp',
       '  quote     — Random quote',
@@ -448,23 +585,45 @@ document.addEventListener('DOMContentLoaded', () => {
       '  fortune   — Fortune cookie',
       '', 'Type anything to explore.',
     ],
-    whoami: () => ['yzt — researcher / operator', 'clearance: ████████████', 'location: [REDACTED]'],
-    about: () => ['An observer at the intersection of AI, security,', 'and emergent patterns. Operating in the spaces', 'where systems break, evolve, and recombine.'],
-    skills: () => [
+    whoami: () => currentLang === 'zh' ?
+      ['yzt — 研究员 / 操作员', '权限等级: ████████████', '位置: [已隐藏]'] :
+      ['yzt — researcher / operator', 'clearance: ████████████', 'location: [REDACTED]'],
+    about: () => currentLang === 'zh' ?
+      ['一个站在AI、安全和涌现模式交汇处的观察者。', '在系统崩溃、进化和重组的空间中运作。'] :
+      ['An observer at the intersection of AI, security,', 'and emergent patterns. Operating in the spaces', 'where systems break, evolve, and recombine.'],
+    skills: () => currentLang === 'zh' ? [
+      '├── AI / 机器学习系统    [████████░░] 90%',
+      '├── 网络安全            [███████░░░] 75%',
+      '├── 软件开发            [████████░░] 85%',
+      '└── 基础设施            [███████░░░] 70%',
+    ] : [
       '├── AI / ML Systems    [████████░░] 90%',
       '├── Cybersecurity      [███████░░░] 75%',
       '├── Development        [████████░░] 85%',
       '└── Infrastructure     [███████░░░] 70%',
     ],
-    focus: () => ['→ LLM Agents & Orchestration', '→ Penetration Testing (learning)', '→ Adversarial ML Research', '→ System-level security analysis'],
-    projects: () => [
+    focus: () => currentLang === 'zh' ?
+      ['→ 大模型智能体与编排', '→ 渗透测试（学习中）', '→ 对抗性机器学习研究', '→ 系统级安全分析'] :
+      ['→ LLM Agents & Orchestration', '→ Penetration Testing (learning)', '→ Adversarial ML Research', '→ System-level security analysis'],
+    projects: () => currentLang === 'zh' ? [
+      '◆ Hermes Agent — AI助手平台',
+      '◆ 个人网站 — yzt.qzz.io',
+      '◆ [机密] — ████████████████',
+      '◆ [机密] — ████████████████',
+    ] : [
       '◆ Hermes Agent — AI assistant platform',
       '◆ Personal Site — yzt.qzz.io',
       '◆ [CLASSIFIED] — ████████████████',
       '◆ [CLASSIFIED] — ████████████████',
     ],
-    secret: () => { setTimeout(() => showToast('🎮 Easter egg found! Try the Konami code...'), 500); return ['You found it. But there\'s nothing here. Or is there? 👁️', 'Hint: ↑↑↓↓←→←→BA']; },
-    theme: () => { themeToggle.click(); return ['Theme toggled!']; },
+    secret: () => {
+      setTimeout(() => showToast(currentLang === 'zh' ? '🎮 发现彩蛋！试试科纳米秘技...' : '🎮 Easter egg found! Try the Konami code...'), 500);
+      return currentLang === 'zh' ?
+        ['你找到了。但这里什么都没有。真的吗？👁️', '提示: ↑↑↓↓←→←→BA'] :
+        ['You found it. But there\'s nothing here. Or is there? 👁️', 'Hint: ↑↑↓↓←→←→BA'];
+    },
+    theme: () => { themeToggle.click(); return [currentLang === 'zh' ? '主题已切换！' : 'Theme toggled!']; },
+    lang: () => { langToggle.click(); return ['']; },
     date: () => [new Date().toISOString()],
     clear: () => 'CLEAR',
     matrix: () => {
@@ -474,30 +633,54 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let j = 0; j < 60; j++) line += String.fromCharCode(0x30A0 + Math.random() * 96);
         lines.push(line);
       }
-      lines.push('', 'Wake up, Neo...', 'The Matrix has you...', 'Follow the white rabbit. 🐇');
+      lines.push('', currentLang === 'zh' ? '醒来吧，尼奥...' : 'Wake up, Neo...');
       return lines;
     },
-    hack: () => {
-      return [
-        'Initializing exploit framework...',
-        '[*] Scanning target 192.168.1.0/24',
-        '[+] Found 12 live hosts',
-        '[*] Enumerating services...',
-        '[+] Port 22/tcp — OpenSSH 8.9',
-        '[+] Port 80/tcp — Apache 2.4',
-        '[+] Port 443/tcp — nginx 1.24',
-        '[*] Checking for vulnerabilities...',
-        '[!] CVE-2024-XXXXX detected',
-        '[*] Generating payload...',
-        '[+] Payload delivered successfully',
-        '[+] Session 1 opened',
-        '',
-        'Just kidding. 😉 Stay ethical.',
-      ];
-    },
+    hack: () => currentLang === 'zh' ? [
+      '初始化漏洞利用框架...',
+      '[*] 扫描目标 192.168.1.0/24',
+      '[+] 发现 12 台活动主机',
+      '[*] 枚举服务...',
+      '[+] 端口 22/tcp — OpenSSH 8.9',
+      '[+] 端口 80/tcp — Apache 2.4',
+      '[+] 端口 443/tcp — nginx 1.24',
+      '[*] 检查漏洞...',
+      '[!] 检测到 CVE-2024-XXXXX',
+      '[*] 生成载荷...',
+      '[+] 载荷投递成功',
+      '[+] 会话 1 已建立',
+      '',
+      '开个玩笑😉 保持道德。',
+    ] : [
+      'Initializing exploit framework...',
+      '[*] Scanning target 192.168.1.0/24',
+      '[+] Found 12 live hosts',
+      '[*] Enumerating services...',
+      '[+] Port 22/tcp — OpenSSH 8.9',
+      '[+] Port 80/tcp — Apache 2.4',
+      '[+] Port 443/tcp — nginx 1.24',
+      '[*] Checking for vulnerabilities...',
+      '[!] CVE-2024-XXXXX detected',
+      '[*] Generating payload...',
+      '[+] Payload delivered successfully',
+      '[+] Session 1 opened',
+      '',
+      'Just kidding. 😉 Stay ethical.',
+    ],
     neofetch: () => {
-      const now = new Date();
-      return [
+      return currentLang === 'zh' ? [
+        '        .--.          yzt@虚空',
+        '       |o_o |         ──────────────',
+        '       |:_/ |         系统: Void Linux x86_64',
+        '      //   \\ \\        内核: 6.6.0-yzt',
+        '     (|     | )       运行: ' + Math.floor((Date.now() - startTime) / 60000) + ' 分钟',
+        '    /\'\\_   _/`\\       Shell: bash 5.2',
+        '    \\___)=(___/       主题: ' + html.getAttribute('data-theme'),
+        '                      分辨率: ' + window.innerWidth + 'x' + window.innerHeight,
+        '                      终端: yzt-term',
+        '                      CPU: 神经网络',
+        '                      内存: ∞ / ∞',
+      ] : [
         '        .--.          yzt@void',
         '       |o_o |         ──────────────',
         '       |:_/ |         OS: Void Linux x86_64',
@@ -512,17 +695,20 @@ document.addEventListener('DOMContentLoaded', () => {
       ];
     },
     fortune: () => {
-      const fortunes = [
+      const zh = [
+        '🔮 "预测未来的最好方法就是创造它。" — 艾伦·凯',
+        '🔮 "任何足够先进的技术都与魔法无异。" — 亚瑟·克拉克',
+        '🔮 "困难之中蕴藏着机会。" — 爱因斯坦',
+        '🔮 "唯一的智慧就是知道自己一无所知。" — 苏格拉底',
+      ];
+      const en = [
         '🔮 "The best way to predict the future is to invent it." — Alan Kay',
         '🔮 "Any sufficiently advanced technology is indistinguishable from magic." — Arthur C. Clarke',
         '🔮 "In the middle of difficulty lies opportunity." — Einstein',
-        '🔮 "First, solve the problem. Then, write the code." — John Johnson',
-        '🔮 "Talk is cheap. Show me the code." — Linus Torvalds',
         '🔮 "The only true wisdom is in knowing you know nothing." — Socrates',
-        '🔮 "Simplicity is the ultimate sophistication." — Leonardo da Vinci',
-        '🔮 "Make it work, make it right, make it fast." — Kent Beck',
       ];
-      return [fortunes[Math.floor(Math.random() * fortunes.length)]];
+      const quotes = currentLang === 'zh' ? zh : en;
+      return [quotes[Math.floor(Math.random() * quotes.length)]];
     },
   };
 
@@ -559,7 +745,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         result.forEach((line, i) => { setTimeout(() => addOutput(line), i * 30); });
       } else {
-        addOutput(`bash: ${cmd}: command not found. Type 'help' for available commands.`, 'error');
+        addOutput(currentLang === 'zh' ? 
+          `bash: ${cmd}: 命令未找到。输入 'help' 查看可用命令。` :
+          `bash: ${cmd}: command not found. Type 'help' for available commands.`, 'error');
       }
       setTimeout(() => { iBody.scrollTop = iBody.scrollHeight; }, 100);
     }
@@ -567,12 +755,12 @@ document.addEventListener('DOMContentLoaded', () => {
   iBody.addEventListener('click', () => iInput.focus());
 
   // ===== TOAST NOTIFICATION =====
-  function showToast(text) {
+  window.showToast = function(text) {
     const toast = document.getElementById('eeToast');
     document.getElementById('eeToastText').textContent = text;
     toast.classList.add('active');
     setTimeout(() => toast.classList.remove('active'), 3000);
-  }
+  };
 
   // ===== KONAMI CODE =====
   const konamiSequence = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
@@ -602,7 +790,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function activateKonami() {
-    showToast('🎮 KONAMI CODE ACTIVATED!');
+    showToast(currentLang === 'zh' ? '🎮 秘技已激活！' : '🎮 KONAMI CODE ACTIVATED!');
     const overlay = document.getElementById('konamiOverlay');
     overlay.classList.add('active');
 
