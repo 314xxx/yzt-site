@@ -725,3 +725,4 @@ body::after {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
+/* force rebuild 2026年06月16日 19:33:21 */
