@@ -77,18 +77,18 @@ const translations = {
 
 // ===== LANGUAGE TOGGLE =====
 let currentLang = localStorage.getItem('lang') || 'zh';
-const langToggle = document.getElementById('langToggle');
-const langText = langToggle.querySelector('.lang-text');
 
 function updateLanguage(lang) {
   currentLang = lang;
   localStorage.setItem('lang', lang);
-  langText.textContent = lang === 'zh' ? 'EN' : '中';
+  
+  const langTextEl = document.querySelector('.lang-text');
+  if (langTextEl) langTextEl.textContent = lang === 'zh' ? 'EN' : '中';
   
   // Update all elements with data-i18n
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
-    if (translations[lang][key]) {
+    if (translations[lang] && translations[lang][key]) {
       if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
         el.placeholder = translations[lang][key];
       } else {
@@ -101,16 +101,20 @@ function updateLanguage(lang) {
   document.title = lang === 'zh' ? 'YZT — 研究者·操作者·观察者' : 'YZT — Researcher·Operator·Observer';
 }
 
-langToggle.addEventListener('click', () => {
-  const newLang = currentLang === 'zh' ? 'en' : 'zh';
-  updateLanguage(newLang);
-  showToast(newLang === 'zh' ? '🇨🇳 已切换到中文' : '🇬🇧 Switched to English');
-});
-
-// Initialize language
+// Initialize language immediately
 updateLanguage(currentLang);
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  // Language toggle click handler
+  const langToggle = document.getElementById('langToggle');
+  if (langToggle) {
+    langToggle.addEventListener('click', () => {
+      const newLang = currentLang === 'zh' ? 'en' : 'zh';
+      updateLanguage(newLang);
+      showToast(newLang === 'zh' ? '🇨🇳 已切换到中文' : '🇬🇧 Switched to English');
+    });
+  }
 
   // ===== THEME TOGGLE =====
   const themeToggle = document.getElementById('themeToggle');
