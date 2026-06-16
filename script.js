@@ -853,47 +853,33 @@ document.addEventListener('DOMContentLoaded', () => {
     if (grid) grid.style.transform = `translateY(${window.scrollY * 0.3}px)`;
   });
 
-  // ===== SECTION IMAGES (Nous Research style) =====
-  function initSectionImages() {
-    const canvases = document.querySelectorAll('.image-canvas');
+  // ===== PANEL BACKGROUNDS =====
+  function initPanelBackgrounds() {
+    const canvases = document.querySelectorAll('.panel-bg');
     
     canvases.forEach(canvas => {
       const ctx = canvas.getContext('2d');
       const type = canvas.getAttribute('data-type');
       
-      // Set canvas size
       function resize() {
         const parent = canvas.parentElement;
-        canvas.width = parent.offsetWidth * 2;
-        canvas.height = parent.offsetHeight * 2;
-        ctx.scale(2, 2);
+        canvas.width = parent.offsetWidth;
+        canvas.height = parent.offsetHeight;
       }
       resize();
       window.addEventListener('resize', resize);
       
-      const width = () => canvas.offsetWidth;
-      const height = () => canvas.offsetHeight;
+      const width = () => canvas.width;
+      const height = () => canvas.height;
       
-      // Different visualization types
       switch(type) {
-        case 'neural':
-          drawNeural(ctx, width, height);
-          break;
-        case 'matrix':
-          drawMatrix(ctx, width, height);
-          break;
-        case 'waves':
-          drawWaves(ctx, width, height);
-          break;
-        case 'particles':
-          drawParticles(ctx, width, height);
-          break;
-        case 'fractal':
-          drawFractal(ctx, width, height);
-          break;
-        case 'grid':
-          drawGrid(ctx, width, height);
-          break;
+        case 'neural': drawNeural(ctx, width, height); break;
+        case 'waves': drawWaves(ctx, width, height); break;
+        case 'grid': drawGrid(ctx, width, height); break;
+        case 'particles': drawParticles(ctx, width, height); break;
+        case 'fractal': drawFractal(ctx, width, height); break;
+        case 'matrix': drawMatrixBg(ctx, width, height); break;
+        case 'dots': drawDots(ctx, width, height); break;
       }
     });
   }
@@ -962,7 +948,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   // Matrix rain visualization
-  function drawMatrix(ctx, width, height) {
+  function drawMatrixBg(ctx, width, height) {
     const fontSize = 14;
     const chars = '01アイウエオカキクケコサシスセソ';
     
@@ -1165,8 +1151,34 @@ document.addEventListener('DOMContentLoaded', () => {
     animate();
   }
   
-  // Initialize section images
-  initSectionImages();
+  // Dots visualization
+  function drawDots(ctx, width, height) {
+    let time = 0;
+    
+    function animate() {
+      const w = width(), h = height();
+      ctx.clearRect(0, 0, w, h);
+      
+      // Draw dots
+      const dotSize = 30;
+      for (let x = 0; x < w; x += dotSize) {
+        for (let y = 0; y < h; y += dotSize) {
+          const offset = Math.sin(time * 0.03 + x * 0.02 + y * 0.02) * 0.5 + 0.5;
+          ctx.fillStyle = `rgba(14, 165, 233, ${offset * 0.15})`;
+          ctx.beginPath();
+          ctx.arc(x + dotSize/2, y + dotSize/2, 2 + offset * 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      
+      time++;
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
+  
+  // Initialize panel backgrounds
+  initPanelBackgrounds();
 
   // ===== BUILD TIME =====
   document.getElementById('buildTime').textContent =
