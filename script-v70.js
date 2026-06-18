@@ -48,35 +48,37 @@ document.addEventListener('DOMContentLoaded', function() {
     entries.forEach(function(e) { if(e.isIntersecting){navLinks.forEach(function(l){l.style.color='';});var l=document.querySelector('.nav a[href="#'+e.target.id+'"]');if(l)l.style.color='var(--gold)';} });
   }, {threshold:0.3}).observe(secs[0]);
 
-  // ===== UNSEEN EYES (exact unseen.co method) =====
+  // ===== UNSEEN EYES (SVG transform attribute) =====
   var eyeL = document.getElementById('eyeLeft');
   var eyeR = document.getElementById('eyeRight');
   var eyeWrap = document.getElementById('unseenEyes');
 
-  if (eyeL && eyeR && eyeWrap && window.matchMedia('(hover:hover)').matches) {
+  if (eyeL && eyeR && eyeWrap) {
     var emx = 0, emy = 0, ecx = 0, ecy = 0;
     var er = eyeWrap.getBoundingClientRect();
-    var mmx = er.width / 15, mmy = er.height / 10;
+    var mmx = er.width / 12, mmy = er.height / 8;
 
     document.addEventListener('mousemove', function(e) {
       var cx = er.left + er.width / 2;
       var cy = er.top + er.height / 2;
-      emx = Math.max(-1, Math.min(1, (e.clientX - cx) / (window.innerWidth * 0.5)));
-      emy = Math.max(-1, Math.min(1, (e.clientY - cy) / (window.innerHeight * 0.5)));
+      emx = Math.max(-1, Math.min(1, (e.clientX - cx) / (window.innerWidth * 0.4)));
+      emy = Math.max(-1, Math.min(1, (e.clientY - cy) / (window.innerHeight * 0.4)));
     });
 
     window.addEventListener('resize', function() {
       er = eyeWrap.getBoundingClientRect();
-      mmx = er.width / 15;
-      mmy = er.height / 10;
+      mmx = er.width / 12;
+      mmy = er.height / 8;
     });
 
     function animEyes() {
-      ecx += (emx - ecx) * 0.1;
-      ecy += (emy - ecy) * 0.1;
-      var t = 'translate3d(' + (ecx * mmx) + 'px,' + (ecy * mmy) + 'px,0)';
-      eyeL.style.transform = t;
-      eyeR.style.transform = t;
+      ecx += (emx - ecx) * 0.08;
+      ecy += (emy - ecy) * 0.08;
+      var tx = Math.round(ecx * mmx * 10) / 10;
+      var ty = Math.round(ecy * mmy * 10) / 10;
+      var t = 'translate(' + tx + ',' + ty + ')';
+      eyeL.setAttribute('transform', t);
+      eyeR.setAttribute('transform', t);
       requestAnimationFrame(animEyes);
     }
     animEyes();
