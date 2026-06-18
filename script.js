@@ -1,145 +1,19 @@
-// ===== YZT v5 — Dark/Light + 中/EN + Interactions =====
-(function () {
-  'use strict';
+// ===== YZT — Script v5.6 =====
+// Marquee · Custom Cursor · Hero Parallax · Border Glow
 
-  // ===== TERMINAL LINES =====
-  const terminalData = {
-    zh: [
-      { type: 'cmd', text: 'whoami' },
-      { type: 'out', text: 'YZT — 研究者 · 操作者 · 观察者' },
-      { type: 'cmd', text: 'cat focus.txt' },
-      { type: 'out', text: 'AI/LLM · 网络安全 · 系统工程' },
-      { type: 'cmd', text: 'echo $STATUS' },
-      { type: 'out', text: 'ACTIVE — 在边界处探索' },
-    ],
-    en: [
-      { type: 'cmd', text: 'whoami' },
-      { type: 'out', text: 'YZT — Researcher · Operator · Observer' },
-      { type: 'cmd', text: 'cat focus.txt' },
-      { type: 'out', text: 'AI/LLM · Cybersecurity · Systems Engineering' },
-      { type: 'cmd', text: 'echo $STATUS' },
-      { type: 'out', text: 'ACTIVE — exploring the boundary' },
-    ]
-  };
+document.addEventListener('DOMContentLoaded', () => {
 
-  const terminalBody = document.getElementById('terminalBody');
-  let lineIdx = 0;
-  let typing = false;
-
-  function runTerminal(lang) {
-    if (typing) return;
-    typing = true;
-    terminalBody.innerHTML = '';
-    lineIdx = 0;
-
-    const lines = terminalData[lang] || terminalData.zh;
-
-    function typeLine() {
-      if (lineIdx >= lines.length) {
-        // Final cursor
-        const wrap = document.createElement('span');
-        wrap.className = 'terminal-line';
-        wrap.style.opacity = '1';
-        wrap.innerHTML = '<span class="terminal-prompt">~ ❯ </span><span class="terminal-cursor"></span>';
-        terminalBody.appendChild(wrap);
-        typing = false;
-        return;
-      }
-
-      const line = lines[lineIdx];
-
-      if (line.type === 'cmd') {
-        const el = document.createElement('span');
-        el.className = 'terminal-line';
-        el.style.animationDelay = '0s';
-        el.innerHTML = '<span class="terminal-prompt">~ ❯ </span><span class="cmd-text"></span>';
-        terminalBody.appendChild(el);
-
-        const cmdEl = el.querySelector('.cmd-text');
-        const cursor = document.createElement('span');
-        cursor.className = 'terminal-cursor';
-        el.appendChild(cursor);
-
-        let i = 0;
-        function typeChar() {
-          if (i < line.text.length) {
-            cmdEl.textContent += line.text[i++];
-            setTimeout(typeChar, 40 + Math.random() * 50);
-          } else {
-            cursor.remove();
-            lineIdx++;
-            // Show output
-            if (lineIdx < lines.length && lines[lineIdx].type === 'out') {
-              const outEl = document.createElement('span');
-              outEl.className = 'terminal-line';
-              outEl.style.animationDelay = '0.1s';
-              outEl.innerHTML = '<span style="color:var(--text-dim)">' + lines[lineIdx].text + '</span>';
-              terminalBody.appendChild(outEl);
-              lineIdx++;
-            }
-            setTimeout(typeLine, 350);
-          }
-        }
-        typeChar();
-      } else {
-        lineIdx++;
-        typeLine();
-      }
-    }
-
-    setTimeout(typeLine, 300);
+  // ─── Loader ───
+  const loader = document.getElementById('loader');
+  if (loader) {
+    setTimeout(() => loader.classList.add('hidden'), 800);
+    setTimeout(() => loader.remove(), 1400);
   }
 
-  // ===== THEME =====
-  const themeBtn = document.getElementById('themeBtn');
-  let currentTheme = localStorage.getItem('yzt_theme') || 'dark';
-
-  function applyTheme(theme) {
-    currentTheme = theme;
-    localStorage.setItem('yzt_theme', theme);
-    document.documentElement.setAttribute('data-theme', theme);
-    if (themeBtn) themeBtn.textContent = theme === 'dark' ? '☀' : '◐';
-  }
-
-  if (themeBtn) {
-    themeBtn.addEventListener('click', () => {
-      applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
-    });
-  }
-
-  // ===== LANGUAGE =====
-  const langBtn = document.getElementById('langBtn');
-  let currentLang = localStorage.getItem('yzt_lang') || 'zh';
-
-  function applyLang(lang) {
-    currentLang = lang;
-    localStorage.setItem('yzt_lang', lang);
-    if (langBtn) langBtn.textContent = lang === 'zh' ? 'EN' : '中';
-    document.documentElement.lang = lang === 'zh' ? 'zh' : 'en';
-
-    document.querySelectorAll('[data-' + lang + ']').forEach(el => {
-      const text = el.getAttribute('data-' + lang);
-      if (text !== null) {
-        if (text.includes('<')) el.innerHTML = text;
-        else el.textContent = text;
-      }
-    });
-
-    // Re-run terminal in new language
-    runTerminal(lang);
-  }
-
-  if (langBtn) {
-    langBtn.addEventListener('click', () => {
-      applyLang(currentLang === 'zh' ? 'en' : 'zh');
-    });
-  }
-
-  // ===== UPTIME =====
+  // ─── Uptime ───
   const t0 = Date.now();
   const uptimeEl = document.getElementById('uptime');
-
-  function tickUptime() {
+  function tick() {
     if (!uptimeEl) return;
     const d = Date.now() - t0;
     const h = String(Math.floor(d / 3600000)).padStart(2, '0');
@@ -147,156 +21,192 @@
     const s = String(Math.floor((d % 60000) / 1000)).padStart(2, '0');
     uptimeEl.textContent = h + ':' + m + ':' + s;
   }
+  tick();
+  setInterval(tick, 1000);
 
-  // ===== SEEDS =====
-  function genSeeds() {
-    document.querySelectorAll('.seed').forEach(e => {
-      e.textContent = 'SEED: ' + Math.floor(Math.random() * 9999999999).toString().padStart(10, '0');
-    });
-  }
+  // ─── Seeds ───
+  document.querySelectorAll('.seed').forEach(e => {
+    e.textContent = 'SEED: ' + Math.floor(Math.random() * 9999999999).toString().padStart(10, '0');
+  });
 
-  // ===== PROGRESS BAR =====
+  // ─── Progress bar ───
   const bar = document.getElementById('progressBar');
-  function updateProgress() {
-    if (!bar) return;
-    const h = document.documentElement.scrollHeight - window.innerHeight;
-    bar.style.width = (h > 0 ? (window.scrollY / h * 100) : 0) + '%';
-  }
-
-  // ===== SCROLL ANIMATIONS =====
-  const sections = document.querySelectorAll('.section');
-  const navLinks = document.querySelectorAll('.nav a[href^="#"]');
-
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-
-        // Skill bars
-        entry.target.querySelectorAll('.skill-bar span[data-width]').forEach(b => {
-          b.style.width = b.dataset.width + '%';
-        });
-
-        // Stat counters
-        entry.target.querySelectorAll('.stat-num[data-count]').forEach(el => {
-          animateCount(el, el.dataset.count);
-        });
-
-        // Active nav
-        const id = entry.target.id;
-        navLinks.forEach(l => {
-          l.classList.toggle('active', l.getAttribute('href') === '#' + id);
-        });
-      }
+  if (bar) {
+    window.addEventListener('scroll', () => {
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (window.scrollY / h * 100) + '%';
     });
-  }, { threshold: 0.15 });
-
-  sections.forEach(s => observer.observe(s));
-
-  function animateCount(el, target) {
-    const num = parseInt(target);
-    if (isNaN(num)) { el.textContent = target; return; }
-    let current = 0;
-    const step = Math.max(1, Math.floor(num / 25));
-    const iv = setInterval(() => {
-      current += step;
-      if (current >= num) { current = num; clearInterval(iv); }
-      el.textContent = current;
-    }, 35);
   }
 
-  // ===== IP =====
-  async function fetchIP() {
-    const el = document.getElementById('visitorIP');
-    if (!el) return;
-    try {
-      const r = await fetch('https://api.ip.sb/geoip', { signal: AbortSignal.timeout(5000) });
-      const d = await r.json();
-      const p = [];
-      if (d.city) p.push(d.city);
-      if (d.country) p.push(d.country);
-      el.textContent = p.join(', ') || d.ip || '—';
-    } catch {
-      try {
-        const r = await fetch('https://ipinfo.io/json', { signal: AbortSignal.timeout(3000) });
-        const d = await r.json();
-        el.textContent = d.city ? d.city + ', ' + d.country : d.ip || '—';
-      } catch { el.textContent = '—'; }
-    }
-  }
-
-  // ===== VISITS =====
-  function updateVisits() {
-    const el = document.getElementById('visitCount');
-    if (!el) return;
-    let c = parseInt(localStorage.getItem('yzt_visits') || '0') + 1;
-    localStorage.setItem('yzt_visits', c);
-    el.textContent = c;
-  }
-
-  // ===== MOBILE MENU =====
-  const menuBtn = document.getElementById('menuBtn');
-  const mainNav = document.getElementById('mainNav');
-
-  if (menuBtn && mainNav) {
-    menuBtn.addEventListener('click', () => {
-      mainNav.classList.toggle('open');
-      menuBtn.textContent = mainNav.classList.contains('open') ? '✕' : '☰';
+  // ─── Hamburger menu ───
+  const hamburger = document.getElementById('hamburger');
+  const nav = document.getElementById('nav');
+  if (hamburger && nav) {
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      nav.classList.toggle('open');
     });
-    mainNav.querySelectorAll('a').forEach(a => {
+    nav.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', () => {
-        mainNav.classList.remove('open');
-        menuBtn.textContent = '☰';
+        hamburger.classList.remove('active');
+        nav.classList.remove('open');
       });
     });
   }
 
-  // ===== BACK TO TOP =====
-  const backTop = document.getElementById('backTop');
-  if (backTop) {
-    window.addEventListener('scroll', () => backTop.classList.toggle('show', window.scrollY > 400));
-    backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  // ─── Theme toggle ───
+  const themeBtn = document.getElementById('themeToggle');
+  let isDark = true;
+  if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+      isDark = !isDark;
+      if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+        themeBtn.textContent = '\u2600';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeBtn.textContent = '\u263E';
+      }
+    });
   }
 
-  // ===== SMOOTH ANCHOR =====
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      const t = document.querySelector(a.getAttribute('href'));
-      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  // ─── Language toggle ───
+  const langBtn = document.getElementById('langToggle');
+  let lang = 'zh';
+  if (langBtn) {
+    langBtn.addEventListener('click', () => {
+      lang = lang === 'zh' ? 'en' : 'zh';
+      langBtn.textContent = lang === 'zh' ? '\u4E2D' : 'EN';
+      document.querySelectorAll('[data-' + lang + ']').forEach(el => {
+        const val = el.getAttribute('data-' + lang);
+        if (val) el.innerHTML = val;
+      });
+    });
+  }
+
+  // ─── IP ───
+  fetchIP();
+
+  // ─── Active nav ───
+  const sections = document.querySelectorAll('.grid[id]');
+  const links = document.querySelectorAll('.nav a');
+  const obs = new IntersectionObserver(es => {
+    es.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.style.color = '');
+        const l = document.querySelector('.nav a[href="#' + e.target.id + '"]');
+        if (l) l.style.color = 'var(--gold)';
+      }
+    });
+  }, { threshold: 0.3 });
+  sections.forEach(s => obs.observe(s));
+
+  // ═══════════════════════════════════════════
+  // CUSTOM CURSOR (Lorenzo-style with trail)
+  // ═══════════════════════════════════════════
+  const cursorDot = document.getElementById('cursorDot');
+  const cursorRing = document.getElementById('cursorRing');
+
+  if (cursorDot && cursorRing && window.matchMedia('(hover: hover)').matches) {
+    let mx = 0, my = 0;
+    let dx = 0, dy = 0;  // dot position (fast)
+    let rx = 0, ry = 0;  // ring position (slow, creates trail)
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX;
+      my = e.clientY;
+    });
+
+    function animateCursor() {
+      // Dot follows quickly
+      dx += (mx - dx) * 0.25;
+      dy += (my - dy) * 0.25;
+      cursorDot.style.transform = `translate3d(${dx - 6}px, ${dy - 6}px, 0)`;
+
+      // Ring follows slowly (creates trail/gooey effect)
+      rx += (mx - rx) * 0.08;
+      ry += (my - ry) * 0.08;
+      cursorRing.style.transform = `translate3d(${rx - 25}px, ${ry - 25}px, 0)`;
+
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+  }
+
+  // ═══════════════════════════════════════════
+  // HERO PARALLAX (mouse-driven)
+  // ═══════════════════════════════════════════
+  const heroBody = document.getElementById('heroBody');
+  const heroTitle = document.getElementById('heroTitle');
+  const heroText = document.getElementById('heroText');
+
+  if (heroBody && window.matchMedia('(hover: hover)').matches) {
+    document.addEventListener('mousemove', e => {
+      const cx = (e.clientX / window.innerWidth - 0.5) * 2;  // -1 to 1
+      const cy = (e.clientY / window.innerHeight - 0.5) * 2;
+
+      if (heroTitle) {
+        heroTitle.style.transform = `translate(${cx * 8}px, ${cy * 5}px)`;
+      }
+      if (heroText) {
+        heroText.style.transform = `translate(${cx * 4}px, ${cy * 3}px)`;
+      }
+    });
+  }
+
+  // ═══════════════════════════════════════════
+  // BORDER GLOW EFFECT
+  // ═══════════════════════════════════════════
+  document.querySelectorAll('.border-glow').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+
+      // Edge proximity (0-100)
+      const dx = x - cx;
+      const dy = y - cy;
+      let kx = Infinity, ky = Infinity;
+      if (dx !== 0) kx = cx / Math.abs(dx);
+      if (dy !== 0) ky = cy / Math.abs(dy);
+      const edge = Math.min(Math.max(1 / Math.min(kx, ky), 0), 1) * 100;
+
+      // Cursor angle
+      let angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+      if (angle < 0) angle += 360;
+
+      card.style.setProperty('--edge-proximity', edge.toFixed(1));
+      card.style.setProperty('--cursor-angle', angle.toFixed(1) + 'deg');
+      card.style.setProperty('--mouse-x', x + 'px');
+      card.style.setProperty('--mouse-y', y + 'px');
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.setProperty('--edge-proximity', '0');
     });
   });
 
-  // ===== HASH ROUTING =====
-  function handleHash() {
-    const hash = location.hash || '#hero';
-    const target = document.querySelector(hash);
-    if (target) {
-      setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+});
+
+// ─── Fetch IP ───
+async function fetchIP() {
+  const el = document.getElementById('visitorIP');
+  if (!el) return;
+  try {
+    const r = await fetch('https://api.ip.sb/geoip', { signal: AbortSignal.timeout(5000) });
+    const d = await r.json();
+    const p = [];
+    if (d.city) p.push(d.city);
+    if (d.country) p.push(d.country);
+    el.textContent = p.join(', ') || d.ip || '\u672A\u7705';
+  } catch {
+    try {
+      const r = await fetch('http://ip.3322.net', { signal: AbortSignal.timeout(3000) });
+      el.textContent = await r.text();
+    } catch {
+      el.textContent = '\u672A\u7705';
     }
-    navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === hash));
   }
-
-  window.addEventListener('hashchange', handleHash);
-
-  // ===== INIT =====
-  document.addEventListener('DOMContentLoaded', () => {
-    applyTheme(currentTheme);
-    genSeeds();
-    tickUptime();
-    setInterval(tickUptime, 1000);
-    updateProgress();
-    window.addEventListener('scroll', updateProgress);
-    fetchIP();
-    updateVisits();
-    applyLang(currentLang);
-    handleHash();
-
-    // Hide loader after page loads
-    const loader = document.getElementById('loader');
-    if (loader) {
-      setTimeout(() => {
-        loader.classList.add('hide');
-      }, 800);
-    }
-  });
-})();
+}

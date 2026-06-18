@@ -1,192 +1,265 @@
 <!DOCTYPE html>
-<html lang="zh" data-theme="dark">
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YZT</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◈</text></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=5.2">
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=5.6">
 </head>
 <body>
 
-  <!-- LOADING SCREEN -->
-  <div class="loader" id="loader">
+  <!-- ===== CUSTOM CURSOR ===== -->
+  <div class="cursor-wrapper" id="cursorWrapper">
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+    <svg style="position:absolute;width:0;height:0">
+      <defs>
+        <filter id="gooey">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+          <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9" result="goo"/>
+          <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+        </filter>
+      </defs>
+    </svg>
+  </div>
+
+  <!-- ===== LOADING SCREEN ===== -->
+  <div id="loader" class="loader">
     <div class="loader-inner">
       <div class="loader-ring"></div>
-      <span class="loader-text">YZT</span>
+      <span class="loader-text" data-text="YZT">YZT</span>
     </div>
   </div>
 
+  <!-- ===== HEADER ===== -->
   <header class="header">
-    <a href="#hero" class="logo">YZT</a>
-    <button class="mobile-menu-btn" id="menuBtn" aria-label="Menu">☰</button>
-    <nav class="nav" id="mainNav">
-      <a href="#hero" class="active" data-zh="首页" data-en="Home">首页</a>
-      <a href="#about" data-zh="关于" data-en="About">关于</a>
-      <a href="#skills" data-zh="技能" data-en="Skills">技能</a>
-      <a href="#work" data-zh="作品" data-en="Work">作品</a>
-      <a href="pentest-roadmap.html" data-zh="路线图" data-en="Roadmap">路线图</a>
-      <a href="#contact" data-zh="联系" data-en="Contact">联系</a>
+    <a href="#" class="logo">YZT</a>
+    <nav class="nav" id="nav">
+      <a href="#hero">HOME</a>
+      <a href="#about">ABOUT</a>
+      <a href="#skills">SKILLS</a>
+      <a href="#work">WORK</a>
+      <a href="pentest-roadmap.html">PENTEST</a>
+      <a href="#contact">CONTACT</a>
     </nav>
     <div class="header-right">
-      <button class="icon-btn" id="themeBtn" title="Theme">◐</button>
-      <button class="icon-btn" id="langBtn" title="Language">EN</button>
+      <button class="btn-toggle" id="themeToggle" title="切换主题">☀</button>
+      <button class="btn-toggle" id="langToggle" title="Language">中</button>
       <span class="seed" id="headerSeed"></span>
     </div>
+    <button class="hamburger" id="hamburger" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
   </header>
 
   <div class="progress-bar" id="progressBar"></div>
 
+  <!-- ===== HERO ===== -->
   <main class="main">
+    <div class="hero-fullscreen">
+      <section class="grid" id="hero">
+        <div class="cell cell-label">
+          <h1 class="title glitch" data-text="YZT">YZT</h1>
+          <p class="subtitle" data-zh="研究者 · 操作者 · 观察者" data-en="Researcher · Operator · Observer">研究者 · 操作者 · 观察者</p>
+        </div>
+        <div class="cell cell-body" id="heroBody">
+          <h2 class="hero-title" id="heroTitle">
+            <span data-zh="探索边界" data-en="EXPLORE THE">探索边界</span>
+            <span class="hero-title-hl" data-zh="之处" data-en="EDGE">之处</span>
+          </h2>
+          <p class="body-text" id="heroText" data-zh="一个观察者，站在<span class=&quot;hl&quot;>人工智能</span>、<span class=&quot;hl&quot;>网络安全</span>和连接它们的涌现模式的交汇处。在系统崩溃、进化和重组的空间中运作。每一个漏洞都是一扇门。每一个模型都是一面镜子。有趣的问题存在于边界之处。" data-en="An observer standing at the intersection of <span class=&quot;hl&quot;>artificial intelligence</span>, <span class=&quot;hl&quot;>cybersecurity</span>, and the emergent patterns that connect them. Operating in the space where systems crash, evolve, and reorganize. Every vulnerability is a door. Every model is a mirror. Interesting problems exist at the edge.">
+            一个观察者，站在<span class="hl">人工智能</span>、<span class="hl">网络安全</span>和连接它们的涌现模式的交汇处。在系统崩溃、进化和重组的空间中运作。每一个漏洞都是一扇门。每一个模型都是一面镜子。有趣的问题存在于边界之处。
+          </p>
+          <div class="meta-row">
+            <div class="meta">
+              <span class="meta-label" data-zh="位置" data-en="LOCATION">位置</span>
+              <span class="meta-value" id="visitorIP">获取中...</span>
+            </div>
+            <div class="meta">
+              <span class="meta-label" data-zh="状态" data-en="STATUS">状态</span>
+              <span class="meta-value"><span class="dot"></span> <span data-zh="活跃" data-en="ACTIVE">活跃</span></span>
+            </div>
+            <div class="meta">
+              <span class="meta-label" data-zh="运行时间" data-en="UPTIME">运行时间</span>
+              <span class="meta-value" id="uptime">00:00:00</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
-    <!-- HERO -->
-    <section class="section" id="hero">
-      <div class="cell-label">
-        <h1 class="hero-name glitch" data-text="YZT">YZT</h1>
-        <p class="hero-titles" data-zh="研究者 · 操作者 · 观察者" data-en="Researcher · Operator · Observer">研究者 · 操作者 · 观察者</p>
+      <!-- ===== MARQUEE ===== -->
+      <div class="marquee-section">
+        <div class="marquee-row marquee-left">
+          <div class="marquee-track">
+            <span class="marquee-word">AI</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">LLM</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word" data-zh="网络安全" data-en="SECURITY">网络安全</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word" data-zh="渗透" data-en="PENTEST">渗透</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word" data-zh="开源" data-en="OPEN SOURCE">开源</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word" data-zh="研究" data-en="RESEARCH">研究</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word" data-zh="系统" data-en="SYSTEMS">系统</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word" data-zh="工程" data-en="ENGINEERING">工程</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">AI</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">LLM</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word" data-zh="网络安全" data-en="SECURITY">网络安全</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word" data-zh="渗透" data-en="PENTEST">渗透</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word" data-zh="开源" data-en="OPEN SOURCE">开源</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word" data-zh="研究" data-en="RESEARCH">研究</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word" data-zh="系统" data-en="SYSTEMS">系统</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word" data-zh="工程" data-en="ENGINEERING">工程</span>
+            <span class="marquee-dot">◈</span>
+          </div>
+        </div>
+        <div class="marquee-row marquee-right">
+          <div class="marquee-track">
+            <span class="marquee-word">RESEARCH</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">SECURITY</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">ENGINEERING</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">DATA</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">ANALYTICS</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">PENTEST</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">MODELS</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">推理</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">RESEARCH</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">SECURITY</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">ENGINEERING</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">DATA</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">ANALYTICS</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">PENTEST</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">MODELS</span>
+            <span class="marquee-dot">◈</span>
+            <span class="marquee-word">推理</span>
+            <span class="marquee-dot">◈</span>
+          </div>
+        </div>
       </div>
-      <div class="cell-body">
-        <div class="hero-big-title">
-          <span class="hero-line" data-zh="探索" data-en="Explore">探索</span>
-          <span class="hero-line" data-zh="边界" data-en="the">边界</span>
-          <span class="hero-line accent" data-zh="之处" data-en="Boundary">之处</span>
-        </div>
-        <div class="terminal">
-          <div class="terminal-bar">
-            <span class="terminal-dot"></span>
-            <span class="terminal-dot"></span>
-            <span class="terminal-dot"></span>
-            <span class="terminal-title">~/yzt — zsh</span>
-          </div>
-          <div class="terminal-body" id="terminalBody"></div>
-        </div>
-        <div class="meta-row">
-          <div class="meta">
-            <span class="meta-label" data-zh="位置" data-en="Location">位置</span>
-            <span class="meta-value" id="visitorIP">···</span>
-          </div>
-          <div class="meta">
-            <span class="meta-label" data-zh="状态" data-en="Status">状态</span>
-            <span class="meta-value"><span class="dot"></span> <span data-zh="活跃" data-en="Online">活跃</span></span>
-          </div>
-          <div class="meta">
-            <span class="meta-label" data-zh="运行时间" data-en="Uptime">运行时间</span>
-            <span class="meta-value" id="uptime">00:00:00</span>
-          </div>
-          <div class="meta">
-            <span class="meta-label" data-zh="访问" data-en="Visits">访问</span>
-            <span class="meta-value" id="visitCount">—</span>
-          </div>
-        </div>
-      </div>
-    </section>
+    </div>
 
-    <!-- ABOUT -->
-    <section class="section" id="about">
-      <div class="cell-label">
-        <h2 class="section-title" data-zh="关于" data-en="About">关于</h2>
+    <!-- ===== ABOUT ===== -->
+    <section class="grid" id="about">
+      <div class="cell cell-label">
+        <h2 class="section-title" data-zh="关于" data-en="ABOUT">关于</h2>
       </div>
-      <div class="cell-body">
-        <p class="about-text" data-zh="专注于<em>模型架构</em>、<em>数据合成</em>、<em>强化学习</em>和<em>推理</em>，旨在推动开源语言模型能力的发展。在系统崩溃、进化和重组的空间中运作。每一个漏洞都是一扇门。每一个模型都是一面镜子。" data-en="Focused on <em>Model Architecture</em>, <em>Data Synthesis</em>, <em>Reinforcement Learning</em>, and <em>Reasoning</em> — pushing open-source LLMs forward. Operating where systems collapse, evolve, and reorganize. Every vulnerability is a door. Every model is a mirror.">专注于<em>模型架构</em>、<em>数据合成</em>、<em>强化学习</em>和<em>推理</em>，旨在推动开源语言模型能力的发展。在系统崩溃、进化和重组的空间中运作。每一个漏洞都是一扇门。每一个模型都是一面镜子。</p>
+      <div class="cell cell-body">
+        <p class="body-text" data-zh="专注于<span class=&quot;hl&quot;>模型架构</span>、<span class=&quot;hl&quot;>数据合成</span>、<span class=&quot;hl&quot;>强化学习</span>和<span class=&quot;hl&quot;>推理</span>，旨在推动开源语言模型能力的发展。" data-en="Focused on <span class=&quot;hl&quot;>model architecture</span>, <span class=&quot;hl&quot;>data synthesis</span>, <span class=&quot;hl&quot;>reinforcement learning</span>, and <span class=&quot;hl&quot;>reasoning</span>, aiming to advance open-source language model capabilities.">
+          专注于<span class="hl">模型架构</span>、<span class="hl">数据合成</span>、<span class="hl">强化学习</span>和<span class="hl">推理</span>，旨在推动开源语言模型能力的发展。
+        </p>
         <div class="stats">
-          <div class="stat">
-            <span class="stat-num" data-count="3">0</span>
-            <span class="stat-label" data-zh="专注领域" data-en="Focus Areas">专注领域</span>
-          </div>
-          <div class="stat">
-            <span class="stat-num">∞</span>
-            <span class="stat-label" data-zh="探索问题" data-en="Questions">探索问题</span>
-          </div>
-          <div class="stat">
-            <span class="stat-num">0</span>
-            <span class="stat-label" data-zh="边界限制" data-en="Limits">边界限制</span>
-          </div>
+          <div class="stat border-glow"><span class="stat-num">3</span><span class="stat-label" data-zh="专注领域" data-en="FOCUS AREAS">专注领域</span></div>
+          <div class="stat border-glow"><span class="stat-num">∞</span><span class="stat-label" data-zh="探索问题" data-en="QUESTIONS">探索问题</span></div>
+          <div class="stat border-glow"><span class="stat-num">0</span><span class="stat-label" data-zh="边界限制" data-en="LIMITS">边界限制</span></div>
         </div>
       </div>
     </section>
 
-    <!-- SKILLS -->
-    <section class="section" id="skills">
-      <div class="cell-label">
-        <h2 class="section-title" data-zh="技能" data-en="Skills">技能</h2>
+    <!-- ===== SKILLS ===== -->
+    <section class="grid" id="skills">
+      <div class="cell cell-label">
+        <h2 class="section-title" data-zh="技能" data-en="SKILLS">技能</h2>
       </div>
-      <div class="cell-body">
+      <div class="cell cell-body">
         <div class="skill-list">
           <div class="skill-row">
             <span class="skill-name" data-zh="人工智能 / LLM" data-en="AI / LLM">人工智能 / LLM</span>
-            <span class="skill-bar"><span data-width="85"></span></span>
-            <span class="skill-pct">85%</span>
+            <span class="skill-bar"><span style="width:85%"></span></span>
           </div>
           <div class="skill-row">
             <span class="skill-name" data-zh="网络安全 / 渗透" data-en="Security / Pentest">网络安全 / 渗透</span>
-            <span class="skill-bar"><span data-width="45"></span></span>
-            <span class="skill-pct">45%</span>
+            <span class="skill-bar"><span style="width:45%"></span></span>
           </div>
           <div class="skill-row">
-            <span class="skill-name" data-zh="系统开发 / 工程" data-en="Dev / Engineering">系统开发 / 工程</span>
-            <span class="skill-bar"><span data-width="70"></span></span>
-            <span class="skill-pct">70%</span>
+            <span class="skill-name" data-zh="系统开发 / 工程" data-en="Systems / Engineering">系统开发 / 工程</span>
+            <span class="skill-bar"><span style="width:70%"></span></span>
           </div>
           <div class="skill-row">
-            <span class="skill-name" data-zh="数据科学 / 分析" data-en="Data Science">数据科学 / 分析</span>
-            <span class="skill-bar"><span data-width="60"></span></span>
-            <span class="skill-pct">60%</span>
+            <span class="skill-name" data-zh="数据科学 / 分析" data-en="Data Science / Analytics">数据科学 / 分析</span>
+            <span class="skill-bar"><span style="width:60%"></span></span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- WORK -->
-    <section class="section" id="work">
-      <div class="cell-label">
-        <h2 class="section-title" data-zh="作品" data-en="Work">作品</h2>
+    <!-- ===== WORK ===== -->
+    <section class="grid" id="work">
+      <div class="cell cell-label">
+        <h2 class="section-title" data-zh="作品" data-en="WORK">作品</h2>
       </div>
-      <div class="cell-body">
+      <div class="cell cell-body">
         <div class="work-list">
           <a class="work-item" href="pentest-roadmap.html">
             <span class="work-name" data-zh="渗透测试路线图" data-en="Pentest Roadmap">渗透测试路线图</span>
-            <span class="work-desc" data-zh="从零开始的渗透测试学习路径" data-en="Zero-to-hero pentest learning path">从零开始的渗透测试学习路径</span>
-            <span class="badge progress" data-zh="进行中" data-en="WIP">进行中</span>
+            <span class="work-desc" data-zh="从零开始的渗透测试学习路径" data-en="Pentest learning path from zero">从零开始的渗透测试学习路径</span>
+            <span class="badge" data-zh="进行中" data-en="WIP">进行中</span>
           </a>
           <a class="work-item" href="#">
-            <span class="work-name" data-zh="个人主页 v4" data-en="Homepage v4">个人主页 v4</span>
-            <span class="work-desc" data-zh="Nous Research 设计语言" data-en="Nous Research Design Language">Nous Research 设计语言</span>
-            <span class="badge live" data-zh="活跃" data-en="Live">活跃</span>
+            <span class="work-name" data-zh="个人主页 v3" data-en="Homepage v3">个人主页 v3</span>
+            <span class="work-desc" data-zh="Nous Research 设计语言" data-en="Nous Research design language">Nous Research 设计语言</span>
+            <span class="badge" data-zh="活跃" data-en="ACTIVE">活跃</span>
           </a>
           <a class="work-item" href="#">
             <span class="work-name" data-zh="AI Agent 工作流" data-en="AI Agent Workflow">AI Agent 工作流</span>
             <span class="work-desc" data-zh="Hermes Agent 自动化部署" data-en="Hermes Agent automation">Hermes Agent 自动化部署</span>
-            <span class="badge live" data-zh="活跃" data-en="Live">活跃</span>
+            <span class="badge" data-zh="活跃" data-en="ACTIVE">活跃</span>
           </a>
         </div>
       </div>
     </section>
 
-    <!-- CONTACT -->
-    <section class="section" id="contact">
-      <div class="cell-label">
-        <h2 class="section-title" data-zh="联系" data-en="Contact">联系</h2>
+    <!-- ===== CONTACT ===== -->
+    <section class="grid" id="contact">
+      <div class="cell cell-label">
+        <h2 class="section-title" data-zh="联系" data-en="CONTACT">联系</h2>
       </div>
-      <div class="cell-body">
-        <p class="contact-text" data-zh="对人工智能、网络安全或任何有趣的问题感兴趣？欢迎联系。" data-en="Interested in AI, cybersecurity, or any interesting problem? Reach out.">对人工智能、网络安全或任何有趣的问题感兴趣？欢迎联系。</p>
+      <div class="cell cell-body">
+        <p class="body-text" data-zh="对人工智能、网络安全或任何有趣的问题感兴趣？欢迎联系。" data-en="Interested in AI, cybersecurity, or any interesting problems? Feel free to reach out.">对人工智能、网络安全或任何有趣的问题感兴趣？欢迎联系。</p>
         <div class="links">
-          <a href="mailto:yzt0000@outlook.com" class="link-item"><span>→ EMAIL</span><span class="link-arrow">↗</span></a>
-          <a href="https://github.com/314xxx" class="link-item" target="_blank"><span>→ GITHUB</span><span class="link-arrow">↗</span></a>
+          <a href="mailto:yzt0000@outlook.com" class="link-item">→ EMAIL</a>
+          <a href="https://github.com/314xxx" class="link-item" target="_blank">→ GITHUB</a>
         </div>
       </div>
     </section>
-
   </main>
 
+  <!-- ===== FOOTER ===== -->
   <footer class="footer">
     <span>© 2026 YZT</span>
     <span data-zh="研究者 · 操作者 · 观察者" data-en="Researcher · Operator · Observer">研究者 · 操作者 · 观察者</span>
     <span class="seed" id="footerSeed"></span>
   </footer>
 
-  <button class="back-top" id="backTop" aria-label="Back to top">↑</button>
-
-  <script src="script.js?v=5.2"></script>
+  <script src="script.js?v=5.6"></script>
 </body>
 </html>
