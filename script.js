@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Ring follows slowly (creates trail/gooey effect)
       rx += (mx - rx) * 0.08;
       ry += (my - ry) * 0.08;
-      cursorRing.style.transform = `translate3d(${rx - 25}px, ${ry - 25}px, 0)`;
+      cursorRing.style.transform = `translate3d(${rx - 22.5}px, ${ry - 22.5}px, 0)`;
 
       requestAnimationFrame(animateCursor);
     }
