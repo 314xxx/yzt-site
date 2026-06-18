@@ -102,15 +102,70 @@ document.addEventListener('DOMContentLoaded', () => {
   sections.forEach(s => obs.observe(s));
 
   // ═══════════════════════════════════════════
-  // CUSTOM CURSOR (Lorenzo-style with trail)
+  // CUSTOM CURSOR (color-swap with trail)
   // ═══════════════════════════════════════════
   const cursorDot = document.getElementById('cursorDot');
   const cursorRing = document.getElementById('cursorRing');
+  const cursorWrapper = document.getElementById('cursorWrapper');
 
   if (cursorDot && cursorRing && window.matchMedia('(hover: hover)').matches) {
+    // Theme colors
+    const dark = [23, 13, 2];      // #170d02
+    const gold = [255, 172, 2];    // #ffac02
+    const white = [255, 255, 255]; // #fff
+    const blue = [65, 105, 225];   // #4169E1
+
+    let isDark = true; // track theme
+
+    function updateTheme() {
+      isDark = !document.documentElement.hasAttribute('data-theme');
+    }
+
+    // Parse color string to RGB array
+    function parseColor(str) {
+      const m = str.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      return m ? [+m[1], +m[2], +m[3]] : null;
+    }
+
+    // Check if two colors are close
+    function colorClose(a, b, threshold) {
+      return Math.abs(a[0]-b[0]) < threshold &&
+             Math.abs(a[1]-b[1]) < threshold &&
+             Math.abs(a[2]-b[2]) < threshold;
+    }
+
+    // Get the dominant color under cursor
+    function getColorUnderCursor(x, y) {
+      const el = document.elementFromPoint(x, y);
+      if (!el) return null;
+      const style = getComputedStyle(el);
+      const color = parseColor(style.color);
+      const bg = parseColor(style.backgroundColor);
+      return { color, bg };
+    }
+
+    // Determine cursor color based on what's under it
+    function getCursorColor(x, y) {
+      updateTheme();
+      const info = getColorUnderCursor(x, y);
+      if (!info) return isDark ? gold : blue;
+
+      if (isDark) {
+        // Dark mode: gold text → show dark, dark bg → show gold
+        if (info.color && colorClose(info.color, gold, 40)) return dark;
+        return gold;
+      } else {
+        // Light mode: blue text → show white, white bg → show blue
+        if (info.color && colorClose(info.color, blue, 40)) return white;
+        return blue;
+      }
+    }
+
     let mx = 0, my = 0;
-    let dx = 0, dy = 0;  // dot position (fast)
-    let rx = 0, ry = 0;  // ring position (slow, creates trail)
+    let dx = 0, dy = 0;
+    let rx = 0, ry = 0;
+    let currentColor = gold;
+    let colorCheckCounter = 0;
 
     document.addEventListener('mousemove', e => {
       mx = e.clientX;
@@ -121,12 +176,24 @@ document.addEventListener('DOMContentLoaded', () => {
       // Dot follows quickly
       dx += (mx - dx) * 0.25;
       dy += (my - dy) * 0.25;
-      cursorDot.style.transform = `translate3d(${dx - 6}px, ${dy - 6}px, 0)`;
+      cursorDot.style.transform = `translate3d(${dx - 7}px, ${dy - 7}px, 0)`;
 
-      // Ring follows slowly (creates trail/gooey effect)
+      // Ring follows slowly (trail)
       rx += (mx - rx) * 0.08;
       ry += (my - ry) * 0.08;
-      cursorRing.style.transform = `translate3d(${rx - 22.5}px, ${ry - 22.5}px, 0)`;
+      cursorRing.style.transform = `translate3d(${rx - 24}px, ${ry - 24}px, 0)`;
+
+      // Check color every 3 frames (performance)
+      colorCheckCounter++;
+      if (colorCheckCounter % 3 === 0) {
+        const newColor = getCursorColor(mx, my);
+        if (newColor !== currentColor) {
+          currentColor = newColor;
+          const hex = `rgb(${newColor[0]},${newColor[1]},${newColor[2]})`;
+          cursorDot.style.background = hex;
+          cursorRing.style.background = hex;
+        }
+      }
 
       requestAnimationFrame(animateCursor);
     }
