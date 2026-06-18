@@ -1,4 +1,4 @@
-// ===== YZT — Script v70 =====
+// ===== YZT — Script v71 =====
 document.addEventListener('DOMContentLoaded', function() {
 
   // Loader auto-dismiss
@@ -39,16 +39,49 @@ document.addEventListener('DOMContentLoaded', function() {
   var lb = document.getElementById('langToggle'), lg = 'zh';
   if (lb) lb.addEventListener('click', function() { lg=lg==='zh'?'en':'zh'; lb.textContent=lg==='zh'?'\u4E2D':'EN'; document.querySelectorAll('[data-'+lg+']').forEach(function(el){var v=el.getAttribute('data-'+lg);if(v)el.innerHTML=v;}); });
 
-  fetchIP();
+  // IP
+  (function() {
+    var el = document.getElementById('visitorIP');
+    if (!el) return;
+    fetch('https://api.ip.sb/geoip',{signal:AbortSignal.timeout(5000)}).then(function(r){return r.json();}).then(function(d){var p=[];if(d.city)p.push(d.city);if(d.country)p.push(d.country);el.textContent=p.join(', ')||d.ip||'\u672A\u7705';}).catch(function(){fetch('http://ip.3322.net',{signal:AbortSignal.timeout(3000)}).then(function(r){return r.text();}).then(function(t){el.textContent=t;}).catch(function(){el.textContent='\u672A\u7705';});});
+  })();
 
   // Active nav
   var secs = document.querySelectorAll('.grid[id]');
   var navLinks = document.querySelectorAll('.nav a');
-  new IntersectionObserver(function(entries) {
-    entries.forEach(function(e) { if(e.isIntersecting){navLinks.forEach(function(l){l.style.color='';});var l=document.querySelector('.nav a[href="#'+e.target.id+'"]');if(l)l.style.color='var(--gold)';} });
-  }, {threshold:0.3}).observe(secs[0]);
+  if (secs.length) {
+    new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if(e.isIntersecting){navLinks.forEach(function(l){l.style.color='';});var l=document.querySelector('.nav a[href="#'+e.target.id+'"]');if(l)l.style.color='var(--gold)';} });
+    }, {threshold:0.3}).observe(secs[0]);
+  }
 
-  // ===== UNSEEN EYES (SVG transform attribute) =====
+  // ===== CUSTOM CURSOR =====
+  var cdot = document.getElementById('cursorDot');
+  var cring = document.getElementById('cursorRing');
+
+  if (cdot && cring && window.matchMedia('(hover:hover)').matches) {
+    var cmx = -100, cmy = -100, ccx = -100, ccy = -100, crx = -100, cry = -100;
+
+    document.addEventListener('mousemove', function(e) {
+      cmx = e.clientX;
+      cmy = e.clientY;
+    });
+
+    function animCursor() {
+      ccx += (cmx - ccx) * 0.3;
+      ccy += (cmy - ccy) * 0.3;
+      cdot.style.transform = 'translate3d(' + (ccx - 7) + 'px,' + (ccy - 7) + 'px,0)';
+
+      crx += (cmx - crx) * 0.1;
+      cry += (cmy - cry) * 0.1;
+      cring.style.transform = 'translate3d(' + (crx - 22) + 'px,' + (cry - 22) + 'px,0)';
+
+      requestAnimationFrame(animCursor);
+    }
+    animCursor();
+  }
+
+  // ===== UNSEEN EYES =====
   var eyeL = document.getElementById('eyeLeft');
   var eyeR = document.getElementById('eyeRight');
   var eyeWrap = document.getElementById('unseenEyes');
@@ -76,9 +109,8 @@ document.addEventListener('DOMContentLoaded', function() {
       ecy += (emy - ecy) * 0.08;
       var tx = Math.round(ecx * mmx * 10) / 10;
       var ty = Math.round(ecy * mmy * 10) / 10;
-      var t = 'translate(' + tx + ',' + ty + ')';
-      eyeL.setAttribute('transform', t);
-      eyeR.setAttribute('transform', t);
+      eyeL.setAttribute('transform', 'translate(' + tx + ',' + ty + ')');
+      eyeR.setAttribute('transform', 'translate(' + tx + ',' + ty + ')');
       requestAnimationFrame(animEyes);
     }
     animEyes();
@@ -100,10 +132,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     card.addEventListener('mouseleave',function(){card.style.setProperty('--edge-proximity','0');});
   });
-});
 
-function fetchIP() {
-  var el = document.getElementById('visitorIP');
-  if (!el) return;
-  fetch('https://api.ip.sb/geoip',{signal:AbortSignal.timeout(5000)}).then(function(r){return r.json();}).then(function(d){var p=[];if(d.city)p.push(d.city);if(d.country)p.push(d.country);el.textContent=p.join(', ')||d.ip||'\u672A\u7705';}).catch(function(){fetch('http://ip.3322.net',{signal:AbortSignal.timeout(3000)}).then(function(r){return r.text();}).then(function(t){el.textContent=t;}).catch(function(){el.textContent='\u672A\u7705';});});
-}
+});
