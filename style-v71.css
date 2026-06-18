@@ -327,3 +327,22 @@ a { color: inherit; text-decoration: none; }
 [data-theme="light"] .unseen-eyes ellipse[fill="#ffac02"] { fill: #4169E1; }
 [data-theme="light"] .unseen-eyes ellipse[stroke="#ffac02"] { stroke: #4169E1; }
 [data-theme="light"] .unseen-eyes circle[fill="#170d02"] { fill: #ffffff; }
+
+/* ===== UNSEEN EYE ANIMATIONS ===== */
+.unseen-eyes {
+  width: 180px; height: 135px; flex-shrink: 0;
+  opacity: 0.85; transition: opacity 0.3s;
+  animation: eyes-enter 1s cubic-bezier(0.34, 1.56, 0.64, 1) 3.5s both;
+}
+@keyframes eyes-enter {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+.unseen-eyes:hover { opacity: 1; }
+.unseen-eyes svg { width: 100%; height: 100%; }
+.pupil-group { transition: transform 0.08s ease-out; }
+.eyelid { transition: transform 0.15s ease-in-out; }
+.unseen-eyes:hover .pupil-group { opacity: 0; transition: opacity 0.3s; }
+[data-theme="light"] .unseen-eyes ellipse[stroke="#ffac02"] { stroke: #4169E1; }
+[data-theme="light"] .unseen-eyes ellipse[fill="#ffac02"] { fill: #4169E1; }
+[data-theme="light"] .unseen-eyes circle[fill="#170d02"] { fill: #ffffff; }

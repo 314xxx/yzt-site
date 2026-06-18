@@ -81,39 +81,50 @@ document.addEventListener('DOMContentLoaded', function() {
     animCursor();
   }
 
-  // ===== UNSEEN EYES =====
-  var eyeL = document.getElementById('eyeLeft');
-  var eyeR = document.getElementById('eyeRight');
+  // ===== UNSEEN EYES (pupil follow + auto blink) =====
+  var pupilL = document.getElementById('pupil-left');
+  var pupilR = document.getElementById('pupil-right');
+  var eyelidLT = document.getElementById('eyelid-lt');
+  var eyelidLB = document.getElementById('eyelid-lb');
+  var eyelidRT = document.getElementById('eyelid-rt');
+  var eyelidRB = document.getElementById('eyelid-rb');
   var eyeWrap = document.getElementById('unseenEyes');
 
-  if (eyeL && eyeR && eyeWrap) {
-    var emx = 0, emy = 0, ecx = 0, ecy = 0;
-    var er = eyeWrap.getBoundingClientRect();
-    var mmx = er.width / 12, mmy = er.height / 8;
+  if (pupilL && pupilR && eyeWrap) {
+    var emx = 0.5, emy = 0.5, ecx = 0.5, ecy = 0.5;
+    var maxMove = 12;
 
     document.addEventListener('mousemove', function(e) {
-      var cx = er.left + er.width / 2;
-      var cy = er.top + er.height / 2;
-      emx = Math.max(-1, Math.min(1, (e.clientX - cx) / (window.innerWidth * 0.4)));
-      emy = Math.max(-1, Math.min(1, (e.clientY - cy) / (window.innerHeight * 0.4)));
-    });
-
-    window.addEventListener('resize', function() {
-      er = eyeWrap.getBoundingClientRect();
-      mmx = er.width / 12;
-      mmy = er.height / 8;
+      emx = e.clientX / window.innerWidth;
+      emy = e.clientY / window.innerHeight;
     });
 
     function animEyes() {
       ecx += (emx - ecx) * 0.08;
       ecy += (emy - ecy) * 0.08;
-      var tx = Math.round(ecx * mmx * 10) / 10;
-      var ty = Math.round(ecy * mmy * 10) / 10;
-      eyeL.setAttribute('transform', 'translate(' + tx + ',' + ty + ')');
-      eyeR.setAttribute('transform', 'translate(' + tx + ',' + ty + ')');
+      var tx = (ecx - 0.5) * 2 * maxMove;
+      var ty = (ecy - 0.5) * 2 * maxMove;
+      pupilL.setAttribute('transform', 'translate(' + tx + ',' + ty + ')');
+      pupilR.setAttribute('transform', 'translate(' + tx + ',' + ty + ')');
       requestAnimationFrame(animEyes);
     }
     animEyes();
+
+    // Auto blink every 3-5 seconds
+    function blink() {
+      if (eyelidLT) eyelidLT.style.transform = 'translateY(75px)';
+      if (eyelidLB) eyelidLB.style.transform = 'translateY(-65px)';
+      if (eyelidRT) eyelidRT.style.transform = 'translateY(75px)';
+      if (eyelidRB) eyelidRB.style.transform = 'translateY(-65px)';
+      setTimeout(function() {
+        if (eyelidLT) eyelidLT.style.transform = 'translateY(0)';
+        if (eyelidLB) eyelidLB.style.transform = 'translateY(0)';
+        if (eyelidRT) eyelidRT.style.transform = 'translateY(0)';
+        if (eyelidRB) eyelidRB.style.transform = 'translateY(0)';
+      }, 150);
+      setTimeout(blink, 3000 + Math.random() * 2000);
+    }
+    setTimeout(blink, 4000);
   }
 
   // Border glow

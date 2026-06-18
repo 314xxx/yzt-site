@@ -71,33 +71,29 @@
             <div class="unseen-eyes" id="unseenEyes">
               <svg width="311.3" height="233.3" viewBox="0 0 311.3 233.3" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                  <clipPath id="mask-left"><path d="M139.5,101.5c2.5-7.8,6-14.8,10.3-21c0-0.1-0.1-0.2-0.1-0.3c-3.8-11.2-11.1-19-20.6-22c-2.8-0.9-5.6-1.3-8.5-1.3c-7,0-14.2,2.5-21,7.5C89.8,71.3,82.2,82.4,78,95.5c-4.1,13.1-4.3,26.5-0.4,37.9c3.8,11.2,11.1,19,20.6,22c9.4,3,19.9,0.8,29.5-6.1c3.5-2.5,6.7-5.6,9.6-9.1C134.6,128,135.3,114.6,139.5,101.5z"/></clipPath>
-                  <clipPath id="mask-right"><path d="M206,58.9c-3.8-1.2-7.6-1.8-11.4-1.8c-21.7,0-43.6,18.2-52.2,45.3c-4.9,15.5-4.8,31.6,0.3,45.3c5.1,13.6,14.5,23.1,26.6,27c12,3.8,25.3,1.4,37.2-6.7c12.1-8.2,21.5-21.3,26.4-36.8C243,99.2,230.9,66.8,206,58.9z"/></clipPath>
+                  <clipPath id="clip-left"><path d="M139.5,101.5c2.5-7.8,6-14.8,10.3-21c0-0.1-0.1-0.2-0.1-0.3c-3.8-11.2-11.1-19-20.6-22c-2.8-0.9-5.6-1.3-8.5-1.3c-7,0-14.2,2.5-21,7.5C89.8,71.3,82.2,82.4,78,95.5c-4.1,13.1-4.3,26.5-0.4,37.9c3.8,11.2,11.1,19,20.6,22c9.4,3,19.9,0.8,29.5-6.1c3.5-2.5,6.7-5.6,9.6-9.1C134.6,128,135.3,114.6,139.5,101.5z"/></clipPath>
+                  <clipPath id="clip-right"><path d="M206,58.9c-3.8-1.2-7.6-1.8-11.4-1.8c-21.7,0-43.6,18.2-52.2,45.3c-4.9,15.5-4.8,31.6,0.3,45.3c5.1,13.6,14.5,23.1,26.6,27c12,3.8,25.3,1.4,37.2-6.7c12.1-8.2,21.5-21.3,26.4-36.8C243,99.2,230.9,66.8,206,58.9z"/></clipPath>
                 </defs>
-                <g><ellipse transform="matrix(0.3023 -0.9532 0.9532 0.3023 -22.508 182.8248)" fill="none" stroke="#ffac02" stroke-width="3" cx="113.6" cy="106.8" rx="52.5" ry="38.8"/></g>
-                <g clip-path="url(#mask-left)"><g id="eyeLeft"><ellipse transform="matrix(0.2938 -0.9559 0.9559 0.2938 -24.3184 186.5732)" fill="#ffac02" cx="114.1" cy="109.7" rx="33" ry="23.5"/><circle fill="#170d02" cx="132.6" cy="120.7" r="11"/></g></g>
-                <g><ellipse transform="matrix(0.3023 -0.9532 0.9532 0.3023 19.5634 260.2873)" fill="none" stroke="#ffac02" stroke-width="3" cx="187.6" cy="116.8" rx="62.3" ry="49"/></g>
-                <g clip-path="url(#mask-right)"><g id="eyeRight"><ellipse transform="matrix(0.2938 -0.9559 0.9559 0.2938 23.4151 259.1791)" fill="#ffac02" cx="187.1" cy="113.7" rx="35.9" ry="25.6"/><circle fill="#170d02" cx="208.6" cy="121.7" r="11"/></g></g>
+                <ellipse transform="matrix(0.3023 -0.9532 0.9532 0.3023 -22.508 182.8248)" fill="none" stroke="#ffac02" stroke-width="3" cx="113.6" cy="106.8" rx="52.5" ry="38.8"/>
+                <g clip-path="url(#clip-left)">
+                  <g class="pupil-group" id="pupil-left">
+                    <ellipse transform="matrix(0.2938 -0.9559 0.9559 0.2938 -24.3184 186.5732)" fill="#ffac02" cx="114.1" cy="109.7" rx="33" ry="23.5"/>
+                    <circle fill="#170d02" cx="132.6" cy="120.7" r="11"/>
+                  </g>
+                  <rect class="eyelid eyelid-top" id="eyelid-lt" fill="#F8D8D8" stroke="#ffac02" stroke-width="2" x="62.9" y="0" width="103.2" height="55"/>
+                  <rect class="eyelid eyelid-bottom" id="eyelid-lb" fill="#F8D8D8" stroke="#ffac02" stroke-width="2" x="65.1" y="148" width="89.3" height="55"/>
+                </g>
+                <ellipse transform="matrix(0.3023 -0.9532 0.9532 0.3023 19.5634 260.2873)" fill="none" stroke="#ffac02" stroke-width="3" cx="187.6" cy="116.8" rx="62.3" ry="49"/>
+                <g clip-path="url(#clip-right)">
+                  <g class="pupil-group" id="pupil-right">
+                    <ellipse transform="matrix(0.2938 -0.9559 0.9559 0.2938 23.4151 259.1791)" fill="#ffac02" cx="187.1" cy="113.7" rx="35.9" ry="25.6"/>
+                    <circle fill="#170d02" cx="208.6" cy="121.7" r="11"/>
+                  </g>
+                  <rect class="eyelid eyelid-top" id="eyelid-rt" fill="#F8D8D8" stroke="#ffac02" stroke-width="2" x="130.6" y="0" width="117.6" height="55"/>
+                  <rect class="eyelid eyelid-bottom" id="eyelid-rb" fill="#F8D8D8" stroke="#ffac02" stroke-width="2" x="127.5" y="148" width="117.6" height="55"/>
+                </g>
               </svg>
             </div>
-          </div>
-          <p class="hero-desc" id="heroText" data-zh="一个观察者，站在<span class=&quot;hl&quot;>人工智能</span>、<span class=&quot;hl&quot;>网络安全</span>和连接它们的涌现模式的交汇处。在系统崩溃、进化和重组的空间中运作。每一个漏洞都是一扇门。每一个模型都是一面镜子。有趣的问题存在于边界之处。" data-en="An observer standing at the intersection of <span class=&quot;hl&quot;>artificial intelligence</span>, <span class=&quot;hl&quot;>cybersecurity</span>, and the emergent patterns that connect them. Operating in the space where systems crash, evolve, and reorganize. Every vulnerability is a door. Every model is a mirror. Interesting problems exist at the edge.">
-            一个观察者，站在<span class="hl">人工智能</span>、<span class="hl">网络安全</span>和连接它们的涌现模式的交汇处。在系统崩溃、进化和重组的空间中运作。每一个漏洞都是一扇门。每一个模型都是一面镜子。有趣的问题存在于边界之处。
-          </p>
-          <div class="meta-row">
-            <div class="meta">
-              <span class="meta-label" data-zh="位置" data-en="LOCATION">位置</span>
-              <span class="meta-value" id="visitorIP">获取中...</span>
-            </div>
-            <div class="meta">
-              <span class="meta-label" data-zh="状态" data-en="STATUS">状态</span>
-              <span class="meta-value"><span class="dot"></span> <span data-zh="活跃" data-en="ACTIVE">活跃</span></span>
-            </div>
-            <div class="meta">
-              <span class="meta-label" data-zh="运行时间" data-en="UPTIME">运行时间</span>
-              <span class="meta-value" id="uptime">00:00:00</span>
-            </div>
-          </div>
         </div>
       </section>
 
