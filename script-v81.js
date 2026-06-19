@@ -127,6 +127,12 @@ document.addEventListener('DOMContentLoaded', function() {
       emx = e.clientX / window.innerWidth;
       emy = e.clientY / window.innerHeight;
     });
+    document.addEventListener('touchmove', function(e) {
+      if (e.touches.length) {
+        emx = e.touches[0].clientX / window.innerWidth;
+        emy = e.touches[0].clientY / window.innerHeight;
+      }
+    }, {passive:true});
     (function animEyes() {
       ecx += (emx - ecx) * 0.08;
       ecy += (emy - ecy) * 0.08;
